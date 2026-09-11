@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple">#65318f</color>
-    <color name="purple_accent">#843abc</color>
+    <color name="purple">#008F5A</color>
+    <color name="purple_accent">#00A86B</color>
     <color name="semi_transparent">#66000000</color>
     <color name="dark_grey_button">#2a2530</color>
 </resources>

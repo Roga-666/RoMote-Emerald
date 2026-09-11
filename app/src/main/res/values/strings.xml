@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RoMote</string>
+    <string name="app_name">RoMote Emerald</string>
 
     <string name="empty_list">No devices detected</string>
     <string name="paired_devices">Paired devices</string>
@@ -97,6 +97,21 @@
     <string name="remote_options">Options</string>
     <string name="remote_home">Home</string>
     <string name="remote_power">Power</string>
+    <string name="quick_remote_title">RoMote Emerald</string>
+    <string name="quick_remote_tile_label">RoMote Emerald</string>
+    <string name="quick_remote_no_device">No Roku is connected. Open RoMote and select a device first.</string>
+    <string name="quick_remote_open_app">Open RoMote</string>
+    <string name="quick_remote_power">Power on/off</string>
+    <string name="quick_remote_play_pause">Play/pause</string>
+    <string name="quick_remote_mute">Mute/unmute</string>
+    <string name="quick_remote_notification_hint">Expand to show the Roku controls</string>
+    <string name="quick_remote_notification_shown">RoMote controller notification shown</string>
+    <string name="quick_remote_notification_blocked">Notifications are blocked for RoMote Emerald</string>
+    <string name="quick_remote_up">Up</string>
+    <string name="quick_remote_down">Down</string>
+    <string name="quick_remote_left">Left</string>
+    <string name="quick_remote_right">Right</string>
+    <string name="quick_remote_select">Select</string>
     <string name="remote_up">Up</string>
     <string name="remote_left">Left</string>
     <string name="remote_select">Select</string>
