@@ -1,10 +1,15 @@
 package wseemann.media.romote.activity
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
+import android.content.pm.PackageManager
+import androidx.activity.result.contract.ActivityResultContracts
 import android.os.IBinder
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -38,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,6 +62,7 @@ import wseemann.media.romote.composables.theme.RomoteTheme
 import wseemann.media.romote.event.ChannelScreenUiEvent
 import wseemann.media.romote.inappreview.AppReviewManager
 import wseemann.media.romote.service.NotificationService
+import wseemann.media.romote.utils.RemoteControlNotification
 import wseemann.media.romote.utils.Constants
 import wseemann.media.romote.utils.enableRomoteEdgeToEdge
 import wseemann.media.romote.viewmodels.ChannelScreenViewModel
@@ -67,6 +74,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ShakeActivity() {
 
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) RemoteControlNotification.show(this)
+    }
+
     @Inject
     lateinit var appReviewManager: AppReviewManager
 
@@ -76,6 +89,12 @@ class MainActivity : ShakeActivity() {
     private val connectivityViewModel: ConnectivityViewModel by viewModels()
 
     private var isBound = false
+
+    private val deviceChangedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            RemoteControlNotification.show(this@MainActivity)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -94,18 +113,39 @@ class MainActivity : ShakeActivity() {
             connection,
             Context.BIND_AUTO_CREATE
         )
+
+        ContextCompat.registerReceiver(
+            this,
+            deviceChangedReceiver,
+            IntentFilter(Constants.UPDATE_DEVICE_BROADCAST),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            RemoteControlNotification.show(this)
+        } else {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     override fun onResume() {
         super.onResume()
 
+        RemoteControlNotification.show(this)
+
         lifecycleScope.launch {
+            kotlinx.coroutines.delay(500)
+            RemoteControlNotification.show(this@MainActivity)
             appReviewManager.maybeLaunchReviewFlow(this@MainActivity)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+
+        unregisterReceiver(deviceChangedReceiver)
 
         if (isBound) {
             unbindService(connection)
