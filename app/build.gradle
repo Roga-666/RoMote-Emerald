@@ -1,5 +1,16 @@
 import dev.detekt.gradle.Detekt
 
+def emeraldKeystoreFile = System.getenv("ROMOTE_EMERALD_KEYSTORE_FILE")
+def emeraldKeystorePassword = System.getenv("ROMOTE_EMERALD_KEYSTORE_PASSWORD")
+def emeraldKeyAlias = System.getenv("ROMOTE_EMERALD_KEY_ALIAS")
+def emeraldKeyPassword = System.getenv("ROMOTE_EMERALD_KEY_PASSWORD")
+def emeraldSigningReady = [
+    emeraldKeystoreFile,
+    emeraldKeystorePassword,
+    emeraldKeyAlias,
+    emeraldKeyPassword,
+].every { it != null && !it.isBlank() }
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin.android'
@@ -12,20 +23,22 @@ android {
 
     signingConfigs {
         create("releaseConfig") {
-            storeFile file('/Users/wseemann/Downloads/keystore')
-            storePassword 'xxxxxxxxXX'
-            keyAlias 'mykey'
-            keyPassword 'xxxxxxxxXX'
+            if (emeraldSigningReady) {
+                storeFile file(emeraldKeystoreFile)
+                storePassword emeraldKeystorePassword
+                keyAlias emeraldKeyAlias
+                keyPassword emeraldKeyPassword
+            }
         }
     }
 
     defaultConfig {
-        applicationId "wseemann.media.romote"
+        applicationId "wseemann.media.romote.emerald"
         minSdkVersion 26
         targetSdk 36
         compileSdk 36
         versionCode 32
-        versionName "2.2.0"
+        versionName "2.2.0-emerald"
     }
     flavorDimensions = ["distribution"]
 
@@ -39,8 +52,12 @@ android {
         }
     }
     buildTypes {
+        getByName("debug") {
+        }
         getByName("release") {
-            signingConfig = signingConfigs.getByName("releaseConfig")
+            if (emeraldSigningReady) {
+                signingConfig = signingConfigs.getByName("releaseConfig")
+            }
             minifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
