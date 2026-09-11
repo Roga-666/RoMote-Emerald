@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:gravity="center" android:orientation="horizontal" android:padding="6dp">
+
+    <!-- The five primary controls stay centered as one evenly spaced D-pad cluster. -->
+    <LinearLayout android:layout_width="184dp" android:layout_height="184dp" android:gravity="center_horizontal" android:orientation="vertical">
+        <LinearLayout android:layout_width="184dp" android:layout_height="56dp" android:gravity="center" android:orientation="horizontal">
+            <ImageButton android:id="@+id/notification_up" android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/quick_remote_up" android:padding="14dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_up" />
+        </LinearLayout>
+        <TextView android:layout_width="1dp" android:layout_height="8dp" />
+        <LinearLayout android:layout_width="184dp" android:layout_height="56dp" android:gravity="center" android:orientation="horizontal">
+            <ImageButton android:id="@+id/notification_left" android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/quick_remote_left" android:padding="14dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_left" />
+            <TextView android:layout_width="8dp" android:layout_height="1dp" />
+            <TextView android:id="@+id/notification_ok" android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/notification_ok_button" android:gravity="center" android:text="OK" android:textColor="#FF252B29" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:layout_width="8dp" android:layout_height="1dp" />
+            <ImageButton android:id="@+id/notification_right" android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/quick_remote_right" android:padding="14dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_right" />
+        </LinearLayout>
+        <TextView android:layout_width="1dp" android:layout_height="8dp" />
+        <LinearLayout android:layout_width="184dp" android:layout_height="56dp" android:gravity="center" android:orientation="horizontal">
+            <ImageButton android:id="@+id/notification_down" android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/quick_remote_down" android:padding="14dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_down" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView android:layout_width="16dp" android:layout_height="1dp" />
+
+    <!-- Compact utility controls align with the upper, middle and lower D-pad rows. -->
+    <LinearLayout android:layout_width="36dp" android:layout_height="184dp" android:gravity="center_horizontal" android:orientation="vertical">
+        <TextView android:layout_width="1dp" android:layout_height="10dp" />
+        <ImageButton android:id="@+id/notification_power" android:layout_width="36dp" android:layout_height="36dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/quick_remote_power" android:padding="8dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_power" />
+        <TextView android:layout_width="1dp" android:layout_height="28dp" />
+        <ImageButton android:id="@+id/notification_home" android:layout_width="36dp" android:layout_height="36dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/remote_home" android:padding="8dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_home" />
+        <TextView android:layout_width="1dp" android:layout_height="28dp" />
+        <ImageButton android:id="@+id/notification_mute" android:layout_width="36dp" android:layout_height="36dp" android:background="@drawable/notification_remote_button" android:contentDescription="@string/quick_remote_mute" android:padding="8dp" android:scaleType="centerInside" android:src="@drawable/ic_notification_mute" />
+    </LinearLayout>
+</LinearLayout>
