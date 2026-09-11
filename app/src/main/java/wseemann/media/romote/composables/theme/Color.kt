@@ -6,9 +6,9 @@ import androidx.compose.ui.graphics.Color
  * Brand colors, and the source of truth for them. res/values/colors.xml keeps only the subset the
  * widget layout and the drawables still reference, so not every constant here has an XML twin.
  */
-internal val Purple = Color(0xFF65318F)
-internal val PurpleAccent = Color(0xFF843ABC)
-internal val PurpleAccentTwo = Color(0xFF8F318A)
+internal val Purple = Color(0xFF008F5A)
+internal val PurpleAccent = Color(0xFF00A86B)
+internal val PurpleAccentTwo = Color(0xFF10B981)
 internal val OnPurple = Color(0xFFEBEBEB)
 
 /**
@@ -19,11 +19,11 @@ internal val OnPurple = Color(0xFFEBEBEB)
  * settings category headers - is legible. Chroma is pulled to 80% of what tone 80 allows, which
  * keeps it reading purple rather than pink.
  */
-internal val PurpleLight = Color(0xFFDDB9F3)
-internal val OnPurpleLight = Color(0xFF490081)
+internal val PurpleLight = Color(0xFF75E6B5)
+internal val OnPurpleLight = Color(0xFF003822)
 
 /** The lighter purple the connect/scan buttons are tinted with. Not a role in the color scheme. */
-internal val PurpleButton = Color(0xFFA865F3)
+internal val PurpleButton = Color(0xFF10B981)
 
 /** The dot the device list draws beside a device that is not the connected one. */
 internal val SemiTransparentBlack = Color(0x66000000)
