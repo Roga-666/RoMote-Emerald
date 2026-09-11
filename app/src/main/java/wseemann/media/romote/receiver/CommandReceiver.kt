@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import wseemann.media.romote.device.DeviceManager
 import wseemann.media.romote.di.IoDispatcher
+import wseemann.media.romote.di.MainDispatcher
+import wseemann.media.romote.utils.WakeOnLan
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,10 +23,19 @@ class CommandReceiver : BroadcastReceiver() {
     lateinit var ioDispatcher: CoroutineDispatcher
 
     @Inject
+    @MainDispatcher
+    lateinit var mainDispatcher: CoroutineDispatcher
+
+    @Inject
     lateinit var deviceManager: DeviceManager
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
+
+        if (intent.action == ACTION_TOGGLE_POWER) {
+            togglePower(context)
+            return
+        }
 
         val keypressKeyValues = intent.getSerializableExtra("keypress") as? KeyPressKeyValues
         if (keypressKeyValues == null) {
@@ -32,8 +43,42 @@ class CommandReceiver : BroadcastReceiver() {
             return
         }
 
+        val pendingResult = goAsync()
         CoroutineScope(ioDispatcher).launch {
-            deviceManager.getConnectedDevice()?.performKeyPress(keypressKeyValues)
+            try {
+                deviceManager.getConnectedDevice()?.performKeyPress(keypressKeyValues)
+            } finally {
+                pendingResult.finish()
+            }
         }
+    }
+
+    private fun togglePower(context: Context) {
+        val pendingResult = goAsync()
+        CoroutineScope(ioDispatcher).launch {
+            val device = deviceManager.getConnectedDevice()
+            val powerMode = device?.queryDeviceInfo()?.powerMode
+            when (powerMode) {
+                POWER_ON_MODE -> {
+                    device.performKeyPress(KeyPressKeyValues.POWER_OFF)
+                    pendingResult.finish()
+                }
+                null -> WakeOnLan.wakeAsync(
+                    context,
+                    deviceManager,
+                    ioDispatcher,
+                    mainDispatcher,
+                ) { pendingResult.finish() }
+                else -> {
+                    device.performKeyPress(KeyPressKeyValues.POWER_ON)
+                    pendingResult.finish()
+                }
+            }
+        }
+    }
+
+    companion object {
+        const val ACTION_TOGGLE_POWER = "wseemann.media.romote.action.TOGGLE_POWER"
+        private const val POWER_ON_MODE = "PowerOn"
     }
 }
