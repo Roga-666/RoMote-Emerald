@@ -60,9 +60,10 @@ jobs:
       - name: Report merge conflict
         if: steps.merge.outputs.conflict == 'true'
         run: |
-          existing="$(gh issue list --state open --search 'Upstream merge needs attention in:title' --json number --jq 'length')"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'Upstream merge needs attention in:title' --json number --jq 'length')"
           if [ "$existing" = "0" ]; then
             gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
               --title "Upstream merge needs attention" \
               --body "The scheduled Emerald update could not merge the latest official RoMote master branch automatically. Resolve the workflow conflict manually, then rerun this workflow."
           fi
@@ -103,5 +104,6 @@ jobs:
           tag="emerald-upstream-$upstream_sha-${{ github.run_number }}"
           cp app/build/outputs/apk/foss/release/app-foss-release.apk "RoMote-Emerald-$upstream_sha.apk"
           gh release create "$tag" "RoMote-Emerald-$upstream_sha.apk" \
+            --repo "$GITHUB_REPOSITORY" \
             --title "RoMote Emerald – upstream $upstream_sha" \
             --notes "Signed RoMote Emerald build based on official RoMote commit $upstream_sha. Includes the Emerald notification remote, Quick Settings access, widget theme, and branding modifications."
