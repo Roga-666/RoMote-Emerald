@@ -69,7 +69,7 @@ jobs:
           exit 1
 
       - name: Require signing secrets
-        if: steps.merge.outputs.changed == 'true'
+        if: steps.merge.outputs.conflict != 'true' && (steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
         env:
           KEYSTORE_BASE64: ${{ secrets.ROMOTE_EMERALD_KEYSTORE_BASE64 }}
         run: |
@@ -81,11 +81,11 @@ jobs:
           echo "ROMOTE_EMERALD_KEYSTORE_FILE=$RUNNER_TEMP/romote-emerald.jks" >> "$GITHUB_ENV"
 
       - name: Test and build signed release
-        if: steps.merge.outputs.changed == 'true'
+        if: steps.merge.outputs.conflict != 'true' && (steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
         run: ./gradlew testFossReleaseUnitTest assembleFossRelease
 
       - name: Verify signed APK
-        if: steps.merge.outputs.changed == 'true'
+        if: steps.merge.outputs.conflict != 'true' && (steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
         shell: bash
         run: |
           apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
@@ -96,12 +96,12 @@ jobs:
         run: git push origin HEAD:master
 
       - name: Publish APK release
-        if: steps.merge.outputs.changed == 'true'
+        if: steps.merge.outputs.conflict != 'true' && (steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
         shell: bash
         run: |
           upstream_sha="$(git rev-parse --short=12 upstream/master)"
-          tag="emerald-upstream-$upstream_sha"
+          tag="emerald-upstream-$upstream_sha-${{ github.run_number }}"
           cp app/build/outputs/apk/foss/release/app-foss-release.apk "RoMote-Emerald-$upstream_sha.apk"
           gh release create "$tag" "RoMote-Emerald-$upstream_sha.apk" \
             --title "RoMote Emerald – upstream $upstream_sha" \
-            --notes "Automated Emerald build after merging the latest official RoMote master branch."
+            --notes "Signed RoMote Emerald build based on official RoMote commit $upstream_sha. Includes the Emerald notification remote, Quick Settings access, widget theme, and branding modifications."
