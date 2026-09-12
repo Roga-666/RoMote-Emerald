@@ -1,50 +1,82 @@
-# RoMote
-Open source Roku remote. Turn your Android Device into a control center for your Roku Player and Roku TV.
+# RoMote Emerald
 
-<a href="https://f-droid.org/packages/wseemann.media.romote" target="_blank">
-<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"/></a>
-<a href="https://play.google.com/store/apps/details?id=wseemann.media.romote" target="_blank">
-<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/></a>
+RoMote Emerald is an unofficial, independently maintained fork of
+[wseemann/RoMote](https://github.com/wseemann/RoMote), an open-source Android
+remote for Roku players and Roku TVs.
 
-If RoMote fails to detect your Roku device or send commands to it,
-make sure the **Control by mobile apps** setting in your Roku [is
-enabled](https://support.roku.com/article/217288467#section-2).
+This fork retains RoMote's core remote-control functionality while adding an
+emerald visual identity and faster access to commonly used controls. It is not
+affiliated with or endorsed by the original RoMote developer, Roku, Google
+Play, or F-Droid.
 
-Building
---------
+## Emerald features
+
+- Expanded notification remote with Up, Down, Left, Right, OK, Power, Home,
+  and Mute controls
+- Notification shown automatically after opening a connected remote
+- Quick Settings tile that can restore the notification manually
+- Emerald application, remote-tab, widget, and notification styling
+- Custom RoMote Emerald launcher icon
+- Separate Android package name so it can coexist with the original RoMote app
+- Automated upstream synchronization, testing, signing, and APK releases
+
+## Downloads
+
+RoMote Emerald is not distributed through the original RoMote listings on
+Google Play or F-Droid. Builds produced for this fork are published on this
+repository's [Releases](https://github.com/Roga-666/RoMote-Emerald/releases)
+page when a release is available.
+
+## Using the remote
+
+If RoMote Emerald cannot detect your Roku device or send commands, make sure
+Roku's **Control by mobile apps** setting is enabled. Roku documents that
+setting in its [mobile-app troubleshooting guide](https://support.roku.com/article/217288467#section-2).
+
+## Building
 
 The app has two product flavors:
 
 | Flavor | Build command | Notes |
 |---|---|---|
-| `play` | `./gradlew assemblePlayRelease` | Google Play build. Adds `com.google.android.play:review-ktx` for the in-app review prompt. |
-| `foss` | `./gradlew assembleFossRelease` | Fully free build, used by F-Droid. Contains no proprietary dependencies; the review prompt is a no-op. |
+| `play` | `./gradlew assemblePlayRelease` | Adds the Google Play in-app review dependency. |
+| `foss` | `./gradlew assembleFossRelease` | Fully free build with no proprietary dependencies; the review prompt is a no-op. |
 
-`play` is the default flavor for local development. The only difference between the two is the
-in-app review implementation, supplied per flavor from `app/src/play` and `app/src/foss`.
+`play` is the default flavor for local development. Release builds use the
+following environment variables, which should be stored as encrypted secrets
+and never committed:
 
-Privacy
--------
+- `ROMOTE_EMERALD_KEYSTORE_BASE64`
+- `ROMOTE_EMERALD_KEYSTORE_PASSWORD`
+- `ROMOTE_EMERALD_KEY_ALIAS`
+- `ROMOTE_EMERALD_KEY_PASSWORD`
 
-RoMote does not collect or share any user data.
+## Automated upstream updates
 
+The `sync-upstream.yml` workflow checks the official RoMote `master` branch
+weekly and can also be run manually. When upstream changes, it attempts a
+normal Git merge, runs the tests, builds and verifies a signed APK, pushes the
+verified merge, and publishes a GitHub Release. If the merge conflicts, the
+workflow opens an issue instead of publishing an unverified build.
 
-License
--------
+No automated process can guarantee compatibility with every future upstream
+redesign. A reported merge conflict means the Emerald modifications need a
+manual update.
 
-```
-RoMote: Open source Roku remote.
+## Privacy
 
-Copyright 2026 William Seemann
+Like the upstream project, RoMote Emerald does not collect or share user data.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+## Attribution and license
 
-http://www.apache.org/licenses/LICENSE-2.0
+RoMote Emerald is derived from
+[RoMote by William Seemann](https://github.com/wseemann/RoMote). The original
+project's copyright notice, commit history, and contributor attribution are
+retained. The Emerald branding, notification controls, Quick Settings access,
+widget changes, and related integration work are modifications made for this
+fork.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The project remains licensed under the
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). See
+[`LICENSE`](LICENSE) for the complete terms. The Apache License does not imply
+endorsement by the original author or grant rights to third-party trademarks.
