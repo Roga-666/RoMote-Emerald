@@ -82,7 +82,7 @@ jobs:
 
       - name: Test and build signed release
         if: steps.merge.outputs.conflict != 'true' && (steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
-        run: ./gradlew testFossReleaseUnitTest assembleFossRelease
+        run: ./gradlew testFossDebugUnitTest assembleFossRelease
 
       - name: Verify signed APK
         if: steps.merge.outputs.conflict != 'true' && (steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
