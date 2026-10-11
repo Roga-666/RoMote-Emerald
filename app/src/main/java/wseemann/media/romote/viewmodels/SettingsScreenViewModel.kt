@@ -27,6 +27,7 @@ class SettingsScreenViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         SettingsScreenUiState(
+            hardwareVolumeEnabled = appPreferences.isHardwareVolumeEnabled(),
             shakeToPauseEnabled = appPreferences.isShakeToPauseEnabled(),
             notificationWidgetEnabled = appPreferences.isNotificationWidgetEnabled(),
             versionName = BuildConfig.VERSION_NAME
@@ -43,6 +44,10 @@ class SettingsScreenViewModel @Inject constructor(
 
     fun onHandleEvent(event: SettingsScreenUiEvent) {
         when (event) {
+            is SettingsScreenUiEvent.HardwareVolumeToggledEvent -> {
+                appPreferences.setHardwareVolumeEnabled(event.enabled)
+                _uiState.update { it.copy(hardwareVolumeEnabled = event.enabled) }
+            }
             is SettingsScreenUiEvent.FindRemoteClickedEvent -> onFindRemoteClicked()
             is SettingsScreenUiEvent.ShakeToPauseToggledEvent -> {
                 _uiState.update { it.copy(shakeToPauseEnabled = event.enabled) }

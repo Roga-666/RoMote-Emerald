@@ -29,6 +29,40 @@ jobs:
       - name: Run unit tests and build APK
         run: ./gradlew testFossDebugUnitTest assembleFossDebug
 
+      - name: Build signed update APK
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        id: signed
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ROMOTE_EMERALD_KEYSTORE_BASE64 }}
+          ROMOTE_EMERALD_KEYSTORE_PASSWORD: ${{ secrets.ROMOTE_EMERALD_KEYSTORE_PASSWORD }}
+          ROMOTE_EMERALD_KEY_ALIAS: ${{ secrets.ROMOTE_EMERALD_KEY_ALIAS }}
+          ROMOTE_EMERALD_KEY_PASSWORD: ${{ secrets.ROMOTE_EMERALD_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Signing key unavailable; debug APK only."
+            exit 0
+          fi
+          test -n "$ROMOTE_EMERALD_KEYSTORE_PASSWORD"
+          test -n "$ROMOTE_EMERALD_KEY_ALIAS"
+          test -n "$ROMOTE_EMERALD_KEY_PASSWORD"
+          keyfile="$RUNNER_TEMP/romote-emerald.jks"
+          trap 'rm -f "$keyfile"' EXIT
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$keyfile"
+          export ROMOTE_EMERALD_KEYSTORE_FILE="$keyfile"
+          ./gradlew assembleFossRelease
+          signer="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
+          "$signer" verify app/build/outputs/apk/foss/release/app-foss-release.apk
+          echo "built=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload signed update APK
+        if: steps.signed.outputs.built == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: RoMote-Emerald-signed
+          path: app/build/outputs/apk/foss/release/app-foss-release.apk
+          if-no-files-found: error
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
