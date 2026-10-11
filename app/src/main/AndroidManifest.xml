@@ -82,6 +82,28 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
+            android:name="wseemann.media.romote.widget.EmeraldSlimWidgetProvider"
+            android:exported="false"
+            android:label="@string/emerald_slim_widget_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/emerald_slim_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name="wseemann.media.romote.widget.EmeraldRemoteWidgetProvider"
+            android:exported="true"
+            android:label="@string/emerald_widget_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/emerald_remote_widget_info" />
+        </receiver>
+
+        <receiver
             android:name="wseemann.media.romote.widget.RokuAppWidgetProvider"
             android:exported="true"
             android:label="@string/title_romote_widget">
