@@ -128,8 +128,11 @@
     <string name="hardware_volume_title">Use phone volume buttons</string>
     <string name="hardware_volume_summary">Control Roku volume while the main RoMote window is active. Hold a button to repeat. Phone volume works normally when RoMote is in the background.</string>
     <string name="emerald_widget_title">Emerald Quick Remote</string>
-    <string name="emerald_widget_help">Add Emerald Quick Remote from your home screen widget picker. Select a Roku in the app first. Lock screen placement depends on your phone and widget host; if it is unavailable, use the notification remote.</string>
+    <string name="emerald_widget_help">Add Emerald Quick Remote or the 4×1 Emerald Slim Remote from your widget picker. Select a Roku in the app first. On Samsung, use Good Lock’s LockStar to place widgets on the lock screen.</string>
     <string name="quick_remote_ok">OK</string>
     <string name="emerald_widget_open">Open RoMote Emerald to select a Roku</string>
     <string name="emerald_widget_description">Emerald Roku controls with volume, navigation, power, home and mute.</string>
+    <string name="emerald_slim_widget_title">Emerald Slim Remote</string>
+    <string name="emerald_slim_widget_description">One-row Roku remote: power, play/pause, and mute/unmute. Select a Roku in RoMote first. Add to your lock screen using LockStar.</string>
+    <string name="slim_mute_toggle">Mute or unmute</string>
 </resources>

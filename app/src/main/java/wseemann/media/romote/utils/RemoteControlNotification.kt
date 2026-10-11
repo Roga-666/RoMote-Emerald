@@ -84,6 +84,14 @@ object RemoteControlNotification {
         return expanded
     }
 
+    fun createSlimRemoteViews(context: Context): RemoteViews {
+        val views = RemoteViews(context.packageName, R.layout.emerald_slim_widget)
+        linkPower(views, context, R.id.slim_power, 209)
+        link(views, context, R.id.slim_play_pause, KeyPressKeyValues.PLAY, 210)
+        link(views, context, R.id.slim_mute, KeyPressKeyValues.VOLUME_MUTE, 208)
+        return views
+    }
+
     private fun link(
         views: RemoteViews,
         context: Context,
