@@ -10,15 +10,24 @@ Open Settings → Notification style → Classic. This is the simplest way to un
 
 ## Revert the code change
 
-The complete feature is isolated in commit `277b7e0a4f1225171dbd0754f99b24f10ea2301d`, on branch `feature/notification-style-picker`. This document is a separate commit.
+The original feature is isolated in commit `277b7e0a4f1225171dbd0754f99b24f10ea2301d`, on branch `feature/notification-style-picker`. This document is a separate commit.
 
-From a clean checkout containing the feature, run:
+Version 2.4.1 removes the five auxiliary labels and centers their icons in a separate commit, `257f5125b09d7ea2f9e9ae38f3b8fc76a4c852c0`. To restore only the labeled 2.4.0 artwork:
 
 ```bash
+git revert --no-edit 257f5125b09d7ea2f9e9ae38f3b8fc76a4c852c0
+```
+
+To remove the complete style-picker feature from a clean checkout containing 2.4.1, revert the icon cleanup first, then the original feature:
+
+```bash
+git revert --no-edit 257f5125b09d7ea2f9e9ae38f3b8fc76a4c852c0
 git revert --no-edit 277b7e0a4f1225171dbd0754f99b24f10ea2301d
 ```
 
-This reverses only the style picker, new artwork/layout, associated preferences and tests, and the 2.4.0 version bump. It retains all earlier notification sizing, hardware-volume, and widget changes from v2.3.2. The inverse patch was verified to restore the exact baseline tree.
+If the icon cleanup is already reverted, run only the second command.
+
+This reverses only the style picker, new artwork/layout, associated preferences and tests, and their version bumps. It retains all earlier notification sizing, hardware-volume, and widget changes from v2.3.2. The inverse patch was verified to restore the exact baseline tree.
 
 If later commits touch the same files, Git may ask you to resolve conflicts. Use `git revert --abort` to cancel that attempt. When merging this PR, preserve the feature commit with a merge commit rather than squashing, so its rollback identity remains available.
 
@@ -30,7 +39,7 @@ git worktree add --detach ../romote-before-notification-styles bc944da8a914e043a
 
 ## Install a build after reverting
 
-The revert restores versionCode 35 in app/build.gradle. Android will not install that as an update over versionCode 36 (2.4.0). For a rollback APK that preserves the installed app's data, set versionCode to a number greater than any version already installed (at least 37 after 2.4.0), choose a new versionName, and build with the same Emerald signing key. Do not uninstall merely to change notification styles; select Classic instead.
+The revert restores versionCode 35 in app/build.gradle. Android will not install that as an update over versionCode 36 (2.4.0) or 37 (2.4.1). For a rollback APK that preserves the installed app's data, set versionCode to a number greater than any version already installed (at least 38 after 2.4.1), choose a new versionName, and build with the same Emerald signing key. Do not uninstall merely to change notification styles; select Classic instead.
 
 ## Implementation and verification
 
