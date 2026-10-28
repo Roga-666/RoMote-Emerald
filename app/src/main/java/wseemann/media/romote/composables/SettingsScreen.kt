@@ -85,6 +85,11 @@ fun SettingsScreen(
                 summary = stringResource(R.string.emerald_widget_help)
             )
 
+            NotificationStylePicker(
+                selectedStyle = uiState.notificationStyle,
+                onSelect = { onEvent(SettingsScreenUiEvent.NotificationStyleSelectedEvent(it)) },
+            )
+
             /*SettingsSwitchRow(
                 title = stringResource(R.string.notification_title_checkbox_preference),
                 summary = stringResource(R.string.notification_to_pause_summary_checkbox_preference),

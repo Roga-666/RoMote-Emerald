@@ -1,5 +1,9 @@
 package wseemann.media.romote.viewmodels
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import wseemann.media.romote.utils.RemoteControlNotification
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wseemann.ecp.core.KeyPressKeyValues
@@ -22,11 +26,13 @@ import javax.inject.Inject
 class SettingsScreenViewModel @Inject constructor(
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val deviceManager: DeviceManager,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         SettingsScreenUiState(
+            notificationStyle = appPreferences.getNotificationStyle(),
             hardwareVolumeEnabled = appPreferences.isHardwareVolumeEnabled(),
             shakeToPauseEnabled = appPreferences.isShakeToPauseEnabled(),
             notificationWidgetEnabled = appPreferences.isNotificationWidgetEnabled(),
@@ -44,6 +50,11 @@ class SettingsScreenViewModel @Inject constructor(
 
     fun onHandleEvent(event: SettingsScreenUiEvent) {
         when (event) {
+            is SettingsScreenUiEvent.NotificationStyleSelectedEvent -> {
+                appPreferences.setNotificationStyle(event.style)
+                _uiState.update { it.copy(notificationStyle = event.style) }
+                RemoteControlNotification.refreshIfVisible(context)
+            }
             is SettingsScreenUiEvent.HardwareVolumeToggledEvent -> {
                 appPreferences.setHardwareVolumeEnabled(event.enabled)
                 _uiState.update { it.copy(hardwareVolumeEnabled = event.enabled) }

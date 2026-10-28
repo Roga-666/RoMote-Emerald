@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Square/aspect-preserving artwork anchors every hit target, including in narrow OEM hosts. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="144dp" android:minHeight="144dp" android:orientation="horizontal"
+    android:padding="4dp" android:baselineAligned="false" android:layoutDirection="ltr">
+    <RelativeLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="156">
+        <ImageView android:id="@+id/thumb_auxiliary_face" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_centerInParent="true" android:adjustViewBounds="true" android:maxWidth="156dp" android:maxHeight="108dp"
+            android:src="@drawable/thumb_remote_auxiliary" android:scaleType="fitCenter" android:importantForAccessibility="no" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:baselineAligned="false"
+            android:layout_alignLeft="@id/thumb_auxiliary_face" android:layout_alignRight="@id/thumb_auxiliary_face"
+            android:layout_alignTop="@id/thumb_auxiliary_face" android:layout_alignBottom="@id/thumb_auxiliary_face">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="54" android:orientation="horizontal" android:baselineAligned="false">
+                <Button android:id="@+id/notification_home" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:contentDescription="@string/remote_home" />
+                <Button android:id="@+id/notification_power" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:contentDescription="@string/quick_remote_power" />
+                <Button android:id="@+id/notification_mute" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:contentDescription="@string/quick_remote_mute" />
+            </LinearLayout>
+            <TextView android:layout_width="1dp" android:layout_height="0dp" android:layout_weight="8" android:importantForAccessibility="no" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="46" android:orientation="horizontal" android:baselineAligned="false">
+                <Button android:id="@+id/notification_volume_down" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:contentDescription="@string/remote_volume_down" />
+                <Button android:id="@+id/notification_volume_up" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:contentDescription="@string/remote_volume_up" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <TextView android:layout_width="4dp" android:layout_height="1dp" android:importantForAccessibility="no" />
+    <RelativeLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="144">
+        <ImageView android:id="@+id/thumb_dpad_face" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_centerInParent="true" android:adjustViewBounds="true" android:maxWidth="144dp" android:maxHeight="144dp"
+            android:src="@drawable/thumb_remote_dpad" android:scaleType="fitCenter" android:importantForAccessibility="no" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:baselineAligned="false"
+            android:layout_alignLeft="@id/thumb_dpad_face" android:layout_alignRight="@id/thumb_dpad_face"
+            android:layout_alignTop="@id/thumb_dpad_face" android:layout_alignBottom="@id/thumb_dpad_face">
+            <Button android:id="@+id/notification_up" style="@style/ThumbRemoteHitTarget" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="42" android:contentDescription="@string/quick_remote_up" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="60" android:orientation="horizontal" android:baselineAligned="false">
+                <Button android:id="@+id/notification_left" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="42" android:contentDescription="@string/quick_remote_left" />
+                <Button android:id="@+id/notification_ok" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="60" android:contentDescription="@string/quick_remote_ok" />
+                <Button android:id="@+id/notification_right" style="@style/ThumbRemoteHitTarget" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="42" android:contentDescription="@string/quick_remote_right" />
+            </LinearLayout>
+            <Button android:id="@+id/notification_down" style="@style/ThumbRemoteHitTarget" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="42" android:contentDescription="@string/quick_remote_down" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

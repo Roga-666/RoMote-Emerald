@@ -12,10 +12,13 @@ import android.widget.RemoteViews
 import androidx.core.net.toUri
 import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.wseemann.ecp.core.KeyPressKeyValues
 import wseemann.media.romote.R
 import wseemann.media.romote.activity.MainActivity
 import wseemann.media.romote.receiver.CommandReceiver
+import wseemann.media.romote.model.NotificationStyle
+import wseemann.media.romote.preferences.AppPreferences
 
 object RemoteControlNotification {
 
@@ -23,6 +26,22 @@ object RemoteControlNotification {
     // the original LOW channel after it has been created on the device.
     private const val CHANNEL_ID = "romote_emerald_remote_v2"
     private const val NOTIFICATION_ID = 101
+
+    fun layoutFor(style: NotificationStyle): Int = when (style) {
+        NotificationStyle.CLASSIC -> R.layout.notification_remote_expanded
+        NotificationStyle.THUMB_FRIENDLY -> R.layout.notification_remote_thumb
+    }
+
+    /** Preview the same XML without attaching any Roku command intents. */
+    fun createPreviewViews(context: Context, style: NotificationStyle): RemoteViews =
+        RemoteViews(context.packageName, layoutFor(style))
+
+    /** A style change only replaces an existing remote; it does not summon a dismissed one. */
+    fun refreshIfVisible(context: Context) {
+        if (context.getSystemService(NotificationManager::class.java).activeNotifications.any { it.id == NOTIFICATION_ID }) {
+            show(context)
+        }
+    }
 
     fun show(context: Context): Boolean {
         if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
@@ -43,7 +62,8 @@ object RemoteControlNotification {
             },
         )
 
-        val expanded = createRemoteViews(context, R.layout.notification_remote_expanded)
+        val preferences = AppPreferences(PreferenceManager.getDefaultSharedPreferences(context))
+        val expanded = createRemoteViews(context, layoutFor(preferences.getNotificationStyle()))
 
         val openApp = PendingIntent.getActivity(
             context,

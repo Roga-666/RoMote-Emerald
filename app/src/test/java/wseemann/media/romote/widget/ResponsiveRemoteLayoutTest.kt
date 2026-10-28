@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.Button
+import android.widget.ImageView
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -29,6 +31,11 @@ class ResponsiveRemoteLayoutTest {
     @Test
     fun notificationFitsConstrainedHosts() {
         checkLayouts(R.layout.notification_remote_expanded, listOf(160 to 88, 200 to 120, 216 to 164, 280 to 164, 600 to 164), 10, View.MeasureSpec.AT_MOST)
+    }
+
+    @Test
+    fun thumbNotificationFitsConstrainedHosts() {
+        checkLayouts(R.layout.notification_remote_thumb, listOf(160 to 88, 200 to 120, 216 to 164, 280 to 164, 600 to 164), 10, View.MeasureSpec.AT_MOST)
     }
 
     @Test
@@ -55,8 +62,17 @@ class ResponsiveRemoteLayoutTest {
                     View.MeasureSpec.makeMeasureSpec((height * density).toInt(), heightMode),
                 )
                 root.layout(0, 0, root.measuredWidth, root.measuredHeight)
-                verify(root, count)
                 if (fontScale == 1f) preview(root, "${context.resources.getResourceEntryName(layout)}-${width}x$height")
+                try {
+                    verify(root, count)
+                } catch (failure: AssertionError) {
+                    fun dump(view: View, indent: String = "") {
+                        println("$indent${view.javaClass.simpleName} id=${view.id} measured=${view.measuredWidth}x${view.measuredHeight} bounds=${view.left},${view.top},${view.right},${view.bottom}")
+                        if (view is ViewGroup) for (i in 0 until view.childCount) dump(view.getChildAt(i), "$indent  ")
+                    }
+                    dump(root)
+                    throw AssertionError("${width}x$height font=$fontScale: ${failure.message}", failure)
+                }
             }
         }
     }
@@ -71,14 +87,22 @@ class ResponsiveRemoteLayoutTest {
                     visit(child)
                 }
             }
-            if (view is ImageButton) {
+            if (view is ImageButton || view is Button) {
                 buttons++
                 assertTrue("Missing command", view.hasOnClickListeners())
-                assertTrue("Empty touch target", view.width > 4 && view.height > 4)
+                assertTrue("Empty touch target ${view.resources.getResourceEntryName(view.id)}: ${view.width}x${view.height}", view.width > 4 && view.height > 4)
+                assertTrue("Missing accessibility description", !view.contentDescription.isNullOrBlank())
+            }
+            if (view is ImageView && view.drawable != null) {
                 val image = RectF(view.drawable.bounds)
                 view.imageMatrix.mapRect(image)
-                assertEquals("Ring must remain circular", image.width(), image.height(), 0.1f)
-                assertTrue("Ring crosses cell edge", image.left >= 0 && image.top >= 0 && image.right <= view.width - view.paddingLeft - view.paddingRight + 0.1f && image.bottom <= view.height - view.paddingTop - view.paddingBottom + 0.1f)
+                if (view.id != R.id.thumb_auxiliary_face) assertEquals("Ring must remain circular", image.width(), image.height(), 0.1f)
+                assertTrue("Artwork crosses cell edge", image.left >= 0 && image.top >= 0 && image.right <= view.width - view.paddingLeft - view.paddingRight + 0.1f && image.bottom <= view.height - view.paddingTop - view.paddingBottom + 0.1f)
+                if (view.id == R.id.thumb_dpad_face || view.id == R.id.thumb_auxiliary_face) {
+                    val parent = view.parent as ViewGroup
+                    val targets = parent.getChildAt(1)
+                    assertEquals("Hit regions must track the artwork", android.graphics.Rect(view.left, view.top, view.right, view.bottom), android.graphics.Rect(targets.left, targets.top, targets.right, targets.bottom))
+                }
             }
         }
         visit(root)
