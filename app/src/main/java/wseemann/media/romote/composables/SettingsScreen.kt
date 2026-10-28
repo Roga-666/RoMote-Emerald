@@ -73,6 +73,23 @@ fun SettingsScreen(
                 onCheckedChange = { onEvent(SettingsScreenUiEvent.ShakeToPauseToggledEvent(it)) }
             )
 
+            SettingsSwitchRow(
+                title = stringResource(R.string.hardware_volume_title),
+                summary = stringResource(R.string.hardware_volume_summary),
+                checked = uiState.hardwareVolumeEnabled,
+                onCheckedChange = { onEvent(SettingsScreenUiEvent.HardwareVolumeToggledEvent(it)) }
+            )
+
+            SettingsInfoRow(
+                title = stringResource(R.string.emerald_widget_title),
+                summary = stringResource(R.string.emerald_widget_help)
+            )
+
+            NotificationStylePicker(
+                selectedStyle = uiState.notificationStyle,
+                onSelect = { onEvent(SettingsScreenUiEvent.NotificationStyleSelectedEvent(it)) },
+            )
+
             /*SettingsSwitchRow(
                 title = stringResource(R.string.notification_title_checkbox_preference),
                 summary = stringResource(R.string.notification_to_pause_summary_checkbox_preference),

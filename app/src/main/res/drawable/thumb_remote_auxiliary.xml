@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="156dp" android:height="108dp" android:viewportWidth="156" android:viewportHeight="108">
+  <path android:pathData="M25,3.5 A23.5,23.5 0,1 0,25,50.5 A23.5,23.5 0,1 0,25,3.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="1.3" />
+  <group android:translateX="13" android:translateY="15" android:scaleX="1.0" android:scaleY="1.0">
+    <path android:fillColor="#FF00DDA3" android:pathData="M3,11.2 12,3.8 21,11.2v9h-6v-6h-6v6H3z" />
+  </group>
+  <path android:pathData="M78,3.5 A23.5,23.5 0,1 0,78,50.5 A23.5,23.5 0,1 0,78,3.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="1.3" />
+  <group android:translateX="66" android:translateY="15" android:scaleX="1.0" android:scaleY="1.0">
+    <path android:fillColor="#FF00DDA3" android:pathData="M11,3h2v9h-2zM7.1,5.2l1.4,1.5A6,6 0,1 0,15.5 6.7l1.4,-1.5A8,8 0,1 1,7.1 5.2z" />
+  </group>
+  <path android:pathData="M131,3.5 A23.5,23.5 0,1 0,131,50.5 A23.5,23.5 0,1 0,131,3.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="1.3" />
+  <group android:translateX="119" android:translateY="15" android:scaleX="1.0" android:scaleY="1.0">
+    <path android:fillColor="#FF00DDA3" android:pathData="M2,9v6h4l5,4V5L6,9H2zM18.5,12l2.5,-2.5 -1.5,-1.5 -2.5,2.5L14.5,8 13,9.5l2.5,2.5L13,14.5l1.5,1.5 2.5,-2.5 2.5,2.5 1.5,-1.5z" />
+  </group>
+  <path android:pathData="M23,63 H133 A21.5,21.5 0,0 1,133,106 H23 A21.5,21.5 0,0 1,23,63 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="1.3" />
+  <path android:pathData="M78,64 L78,105" android:fillColor="#00000000" android:strokeColor="#FF0C171A" android:strokeWidth="1.5" />
+  <group android:translateX="27" android:translateY="72.5" android:scaleX="1.0" android:scaleY="1.0">
+    <path android:fillColor="#FF00DDA3" android:pathData="M2,9v6h4l5,4V5L6,9H2zM16,11h8v2h-8z" />
+  </group>
+  <group android:translateX="105" android:translateY="72.5" android:scaleX="1.0" android:scaleY="1.0">
+    <path android:fillColor="#FF00DDA3" android:pathData="M2,9v6h4l5,4V5L6,9H2zM16,11h3V8h2v3h3v2h-3v3h-2v-3h-3z" />
+  </group>
+</vector>

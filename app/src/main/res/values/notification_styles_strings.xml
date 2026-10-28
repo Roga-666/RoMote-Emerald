@@ -1,0 +1,8 @@
+<resources>
+    <string name="notification_style_title">Notification style</string>
+    <string name="notification_style_help">Choose a layout. Changes are saved automatically and update your active remote notification.</string>
+    <string name="notification_style_classic">Classic</string>
+    <string name="notification_style_thumb">Thumb-Friendly</string>
+    <string name="notification_style_preview">%1$s notification preview</string>
+    <string name="notification_style_preview_note">Previews show the controls only. Your phone supplies the notification header and may adjust the spacing. Choose Classic anytime to restore the previous layout.</string>
+</resources>
