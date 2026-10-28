@@ -1,7 +1,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="284dp" android:minHeight="228dp"
     android:targetCellWidth="4" android:targetCellHeight="3"
-    android:minResizeWidth="284dp" android:minResizeHeight="228dp"
+    android:minResizeWidth="160dp" android:minResizeHeight="144dp"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/emerald_remote_widget"
     android:initialKeyguardLayout="@layout/emerald_remote_widget"
