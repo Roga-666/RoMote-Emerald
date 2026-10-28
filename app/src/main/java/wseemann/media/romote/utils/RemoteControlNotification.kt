@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.widget.RemoteViews
+import androidx.core.net.toUri
+import android.os.Build
 import androidx.core.content.ContextCompat
 import com.wseemann.ecp.core.KeyPressKeyValues
 import wseemann.media.romote.R
@@ -23,7 +25,7 @@ object RemoteControlNotification {
     private const val NOTIFICATION_ID = 101
 
     fun show(context: Context): Boolean {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+        if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
         ) return false
 
@@ -41,15 +43,7 @@ object RemoteControlNotification {
             },
         )
 
-        val expanded = RemoteViews(context.packageName, R.layout.notification_remote_expanded)
-        link(expanded, context, R.id.notification_up, KeyPressKeyValues.UP, 3)
-        link(expanded, context, R.id.notification_left, KeyPressKeyValues.LEFT, 4)
-        link(expanded, context, R.id.notification_ok, KeyPressKeyValues.SELECT, 5)
-        link(expanded, context, R.id.notification_right, KeyPressKeyValues.RIGHT, 6)
-        link(expanded, context, R.id.notification_down, KeyPressKeyValues.DOWN, 7)
-        link(expanded, context, R.id.notification_mute, KeyPressKeyValues.VOLUME_MUTE, 8)
-        linkPower(expanded, context, R.id.notification_power, 9)
-        link(expanded, context, R.id.notification_home, KeyPressKeyValues.HOME, 11)
+        val expanded = createRemoteViews(context, R.layout.notification_remote_expanded)
 
         val openApp = PendingIntent.getActivity(
             context,
@@ -74,6 +68,30 @@ object RemoteControlNotification {
         return manager.activeNotifications.any { it.id == NOTIFICATION_ID }
     }
 
+    fun createRemoteViews(context: Context, layoutId: Int): RemoteViews {
+        val expanded = RemoteViews(context.packageName, layoutId)
+        link(expanded, context, R.id.notification_up, KeyPressKeyValues.UP, 3)
+        link(expanded, context, R.id.notification_left, KeyPressKeyValues.LEFT, 4)
+        link(expanded, context, R.id.notification_ok, KeyPressKeyValues.SELECT, 5)
+        link(expanded, context, R.id.notification_right, KeyPressKeyValues.RIGHT, 6)
+        link(expanded, context, R.id.notification_down, KeyPressKeyValues.DOWN, 7)
+        link(expanded, context, R.id.notification_mute, KeyPressKeyValues.VOLUME_MUTE, 8)
+        linkPower(expanded, context, R.id.notification_power, 9)
+        link(expanded, context, R.id.notification_home, KeyPressKeyValues.HOME, 11)
+
+        link(expanded, context, R.id.notification_volume_up, KeyPressKeyValues.VOLUME_UP, 12)
+        link(expanded, context, R.id.notification_volume_down, KeyPressKeyValues.VOLUME_DOWN, 13)
+        return expanded
+    }
+
+    fun createSlimRemoteViews(context: Context): RemoteViews {
+        val views = RemoteViews(context.packageName, R.layout.emerald_slim_widget)
+        linkPower(views, context, R.id.slim_power, 209)
+        link(views, context, R.id.slim_play_pause, KeyPressKeyValues.PLAY, 210)
+        link(views, context, R.id.slim_mute, KeyPressKeyValues.VOLUME_MUTE, 208)
+        return views
+    }
+
     private fun link(
         views: RemoteViews,
         context: Context,
@@ -81,12 +99,15 @@ object RemoteControlNotification {
         key: KeyPressKeyValues,
         requestCode: Int,
     ) {
-        val intent = Intent(context, CommandReceiver::class.java).putExtra("keypress", key)
+        val intent = Intent(context, CommandReceiver::class.java)
+            .setData("romote://remote/key/${key.name}".toUri())
+            .putExtra("keypress", key)
         views.setOnClickPendingIntent(viewId, broadcast(context, intent, requestCode))
     }
 
     private fun linkPower(views: RemoteViews, context: Context, viewId: Int, requestCode: Int) {
         val intent = Intent(context, CommandReceiver::class.java).setAction(CommandReceiver.ACTION_TOGGLE_POWER)
+            .setData("romote://remote/power".toUri())
         views.setOnClickPendingIntent(viewId, broadcast(context, intent, requestCode))
     }
 

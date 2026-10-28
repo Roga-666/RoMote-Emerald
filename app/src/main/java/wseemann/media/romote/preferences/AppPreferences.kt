@@ -15,6 +15,13 @@ class AppPreferences(private val sharedPreferences: SharedPreferences) {
         }
     }
 
+    fun isHardwareVolumeEnabled(): Boolean =
+        sharedPreferences.getBoolean(APP_PREFERENCE_HARDWARE_VOLUME, true)
+
+    fun setHardwareVolumeEnabled(enabled: Boolean) {
+        sharedPreferences.edit { putBoolean(APP_PREFERENCE_HARDWARE_VOLUME, enabled) }
+    }
+
     fun isShakeToPauseEnabled(): Boolean {
         return sharedPreferences.getBoolean(APP_PREFERENCE_SHAKE_TO_PAUSE, false)
     }
@@ -66,6 +73,7 @@ class AppPreferences(private val sharedPreferences: SharedPreferences) {
     }
 
     companion object {
+        private const val APP_PREFERENCE_HARDWARE_VOLUME = "hardware_volume_enabled"
         const val APP_PREFERENCE_NOTIFICATION_WIDGET = "notification_checkbox_preference"
         private const val APP_PREFERENCE_SHAKE_TO_PAUSE = "shake_to_pause_checkbox_preference"
         private const val APP_PREFERENCE_REVIEW_FIRST_LAUNCH = "review_first_launch_millis"

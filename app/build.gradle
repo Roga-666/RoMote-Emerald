@@ -37,8 +37,8 @@ android {
         minSdkVersion 26
         targetSdk 36
         compileSdk 36
-        versionCode 32
-        versionName "2.2.0-emerald"
+        versionCode 35
+        versionName "2.3.2-emerald"
     }
     flavorDimensions = ["distribution"]
 
@@ -70,6 +70,9 @@ android {
         resources {
             excludes += ['META-INF/DEPENDENCIES']
         }
+    }
+    testOptions {
+        unitTests.includeAndroidResources = true
     }
     buildFeatures {
         buildConfig = true
@@ -137,5 +140,6 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
 
     testImplementation(libs.junit)
+    testImplementation "org.robolectric:robolectric:4.16"
     testImplementation(libs.kotlinx.coroutines.test)
 }
