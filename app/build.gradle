@@ -37,8 +37,8 @@ android {
         minSdkVersion 26
         targetSdk 36
         compileSdk 36
-        versionCode 36
-        versionName "2.4.0-emerald"
+        versionCode 37
+        versionName "2.4.1-emerald"
     }
     flavorDimensions = ["distribution"]
 

@@ -54,17 +54,15 @@ def save(root, name):
     ET.ElementTree(root).write(RES / f'drawable/{name}.xml', encoding='utf-8', xml_declaration=True)
 
 left = vector(156, 108)
-for name, title, x in [('home', 'Home', 25), ('power', 'Power', 78), ('mute', 'Mute', 131)]:
+for name, x in [('home', 25), ('power', 78), ('mute', 131)]:
     face = circle(left, x, 27, 23.5, DARK, GREEN, 1.3)
     shade(face, '#FF253235')
-    icon(left, name, x-11, 9, 22)
-    label(left, title, x, 43, 8.5, '#FFF2F7F6')
+    icon(left, name, x-12, 15, 24)
 pill = path(left, 'M23,63 H133 A21.5,21.5 0,0 1,133,106 H23 A21.5,21.5 0,0 1,23,63 Z', DARK, GREEN, 1.3)
 shade(pill, '#FF253235')
 path(left, 'M78,64 L78,105', stroke='#FF0C171A', width=1.5)
-for name, title, x in [('volume_down','Vol −',39),('volume_up','Vol +',117)]:
-    icon(left, name, x-12, 66, 24)
-    label(left, title, x, 99, 9, '#FFF2F7F6')
+for name, x in [('volume_down',39),('volume_up',117)]:
+    icon(left, name, x-12, 72.5, 24)
 save(left, 'thumb_remote_auxiliary')
 
 pad = vector(144, 144)
