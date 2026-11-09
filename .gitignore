@@ -29,3 +29,5 @@ local.properties
 *.jks
 *.keystore
 signing.properties
+
+*.p12
