@@ -53,28 +53,32 @@ def save(root, name):
     ET.indent(root)
     ET.ElementTree(root).write(RES / f'drawable/{name}.xml', encoding='utf-8', xml_declaration=True)
 
-left = vector(156, 108)
-for name, x in [('home', 25), ('power', 78), ('mute', 131)]:
-    face = circle(left, x, 27, 23.5, DARK, GREEN, 1.3)
+left = vector(96, 168)
+# Two columns let the auxiliary targets grow alongside the main D-pad.
+for name, x, y in [('home', 24, 28), ('power', 72, 28), ('mute', 48, 84)]:
+    face = circle(left, x, y, 22.5, DARK, GREEN, 1.3)
     shade(face, '#FF253235')
-    icon(left, name, x-12, 15, 24)
-pill = path(left, 'M23,63 H133 A21.5,21.5 0,0 1,133,106 H23 A21.5,21.5 0,0 1,23,63 Z', DARK, GREEN, 1.3)
+    icon(left, name, x-15, y-15, 30)
+pill = path(left, 'M25,116 H71 A24,24 0,0 1,71,164 H25 A24,24 0,0 1,25,116 Z', DARK, GREEN, 1.3)
 shade(pill, '#FF253235')
-path(left, 'M78,64 L78,105', stroke='#FF0C171A', width=1.5)
-for name, x in [('volume_down',39),('volume_up',117)]:
-    icon(left, name, x-12, 72.5, 24)
+path(left, 'M48,117 L48,163', stroke='#FF0C171A', width=1.5)
+for name, x in [('volume_down',24),('volume_up',72)]:
+    icon(left, name, x-15, 125, 30)
 save(left, 'thumb_remote_auxiliary')
 
 pad = vector(144, 144)
+# Keep the square viewport while offering a larger intrinsic size to the host.
+pad.set(A('width'), '168dp')
+pad.set(A('height'), '168dp')
 circle(pad,72,72,70.5,DARK,GREEN,1.8)
 for rotation in [0,90,180,270]:
     group = ET.SubElement(pad,'group',{A('rotation'):str(rotation),A('pivotX'):'72',A('pivotY'):'72'})
     wedge = path(group, 'M24.1,24.1 A67.75,67.75 0,0 1,119.9,24.1 L94.6,49.4 A32,32 0,0 0,49.4,49.4 Z', DARK, '#FF0D171A', 1.1)
     shade(wedge, '#FF233033')
-    icon(group, 'up', 60, 12, 24)
+    icon(group, 'up', 58, 10, 28)
 circle(pad,72,72,32.5,'#FF0A171A',GREEN,1.1)
 face = circle(pad,72,72,29.5,GREEN)
 shade(face,GREEN)
-label(pad, 'OK', 72, 79, 20, '#FF102C2A')
+label(pad, 'OK', 72, 79.7, 22, '#FF102C2A')
 save(pad,'thumb_remote_dpad')
 print('Thumb-Friendly vector artwork regenerated.')

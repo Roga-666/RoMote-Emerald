@@ -65,7 +65,7 @@ fun NotificationStylePicker(selectedStyle: NotificationStyle, onSelect: (Notific
                                 addView(controls, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, android.view.Gravity.CENTER))
                             }
                         },
-                        modifier = Modifier.fillMaxWidth().height(164.dp)
+                        modifier = Modifier.fillMaxWidth().height(if (style == NotificationStyle.THUMB_FRIENDLY) 180.dp else 164.dp)
                             .clip(RoundedCornerShape(12.dp)).background(Color(0xff20282b))
                             .semantics { contentDescription = previewDescription },
                     )

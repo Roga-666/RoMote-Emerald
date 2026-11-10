@@ -35,7 +35,33 @@ class ResponsiveRemoteLayoutTest {
 
     @Test
     fun thumbNotificationFitsConstrainedHosts() {
-        checkLayouts(R.layout.notification_remote_thumb, listOf(160 to 88, 200 to 120, 216 to 164, 280 to 164, 600 to 164), 10, View.MeasureSpec.AT_MOST)
+        checkLayouts(R.layout.notification_remote_thumb, listOf(160 to 88, 200 to 120, 216 to 164, 216 to 180, 280 to 164, 280 to 180, 600 to 180), 10, View.MeasureSpec.AT_MOST)
+    }
+
+
+    @Test
+    fun thumbControlsHaveLargerTouchTargets() {
+        val context = RuntimeEnvironment.getApplication()
+        val density = context.resources.displayMetrics.density
+        val ids = listOf(
+            R.id.notification_home, R.id.notification_power, R.id.notification_mute,
+            R.id.notification_volume_down, R.id.notification_volume_up,
+            R.id.notification_up, R.id.notification_down, R.id.notification_left,
+            R.id.notification_right, R.id.notification_ok,
+        )
+        for ((width, minimum) in listOf(216 to 36, 280 to 48)) {
+            val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
+            root.measure(
+                View.MeasureSpec.makeMeasureSpec((width * density).toInt(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec((180 * density).toInt(), View.MeasureSpec.AT_MOST),
+            )
+            root.layout(0, 0, root.measuredWidth, root.measuredHeight)
+            for (id in ids) {
+                val button = root.findViewById<View>(id)
+                assertTrue("Small touch width: ${context.resources.getResourceEntryName(id)}", button.width / density >= minimum - 0.5f)
+                assertTrue("Small touch height: ${context.resources.getResourceEntryName(id)}", button.height / density >= minimum - 0.5f)
+            }
+        }
     }
 
     @Test
