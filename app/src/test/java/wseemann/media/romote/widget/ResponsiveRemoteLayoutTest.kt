@@ -64,6 +64,25 @@ class ResponsiveRemoteLayoutTest {
         }
     }
 
+
+    @Test
+    fun thumbFitsInsideTheNotificationContainer() {
+        val context = RuntimeEnvironment.getApplication()
+        val density = context.resources.displayMetrics.density
+        for ((width, height) in listOf(160 to 88, 216 to 144, 216 to 164, 280 to 164)) {
+            val host = FrameLayout(context)
+            val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, host)
+            host.addView(root)
+            host.measure(
+                View.MeasureSpec.makeMeasureSpec((width * density).toInt(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec((height * density).toInt(), View.MeasureSpec.EXACTLY),
+            )
+            host.layout(0, 0, host.measuredWidth, host.measuredHeight)
+            assertTrue("Notification content overflows its host", root.right <= host.width && root.bottom <= host.height)
+            verify(root, 10)
+        }
+    }
+
     @Test
     fun fullWidgetFitsResizedHosts() {
         checkLayouts(R.layout.emerald_remote_widget, listOf(160 to 144, 216 to 180, 284 to 228, 500 to 144, 600 to 400), 10)
