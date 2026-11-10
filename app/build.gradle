@@ -37,8 +37,8 @@ android {
         minSdkVersion 26
         targetSdk 36
         compileSdk 36
-        versionCode (System.getenv('ROMOTE_EMERALD_BUILD_NUMBER') ? 100000 + System.getenv('ROMOTE_EMERALD_BUILD_NUMBER').toInteger() : 37)
-        versionName (System.getenv("ROMOTE_EMERALD_BUILD_NUMBER") ? "2.4.1-emerald+ci." + System.getenv("ROMOTE_EMERALD_BUILD_NUMBER") : "2.4.1-emerald")
+        versionCode (System.getenv('ROMOTE_EMERALD_BUILD_NUMBER') ? 100000 + System.getenv('ROMOTE_EMERALD_BUILD_NUMBER').toInteger() : 38)
+        versionName (System.getenv("ROMOTE_EMERALD_BUILD_NUMBER") ? "2.4.2-emerald+ci." + System.getenv("ROMOTE_EMERALD_BUILD_NUMBER") : "2.4.2-emerald")
     }
     flavorDimensions = ["distribution"]
 
