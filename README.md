@@ -11,8 +11,8 @@ Play, or F-Droid.
 
 ## Emerald features
 
-- Expanded notification remote with Up, Down, Left, Right, OK, Power, Home,
-  and Mute controls
+- Selectable Thumb-Friendly and Classic notification controls with previews,
+  centered icons, navigation, power, home, mute, and volume controls
 - Notification shown automatically after opening a connected remote
 - Quick Settings tile that can restore the notification manually
 - Emerald application, remote-tab, widget, and notification styling
@@ -53,8 +53,15 @@ and never committed:
 
 ## Automated upstream updates
 
-The `sync-upstream.yml` workflow checks the official RoMote `master` branch
-weekly and can also be run manually. When upstream changes, it attempts a
+The `sync-upstream.yml` workflow publishes a tested, signed GitHub Release
+when app or release-workflow changes reach `master`. The Droid-ify catalog
+imports stable `emerald-*` releases on its next refresh. Release builds use
+`100000 + github.run_number` as their Android versionCode and preserve the
+existing Emerald signing key. The workflow rejects package, signer, or
+version regressions before publishing.
+
+The same workflow checks the official RoMote `master` branch weekly and can
+also be run manually. When upstream changes, it attempts a
 normal Git merge, runs the tests, builds and verifies a signed APK, pushes the
 verified merge, and publishes a GitHub Release. If the merge conflicts, the
 workflow opens an issue instead of publishing an unverified build.

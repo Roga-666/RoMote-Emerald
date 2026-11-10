@@ -1,0 +1,12 @@
+<resources>
+    <style name="ThumbRemoteHitTarget" parent="android:Widget.Button">
+        <item name="android:background">@drawable/thumb_remote_touch_feedback</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:contentDescription">@null</item>
+        <item name="android:focusable">true</item>
+    </style>
+</resources>

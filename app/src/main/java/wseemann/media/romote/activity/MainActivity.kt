@@ -7,6 +7,11 @@ import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.view.KeyEvent
+import wseemann.media.romote.utils.HardwareVolumeRouter
+import androidx.lifecycle.Lifecycle
+import com.wseemann.ecp.core.KeyPressKeyValues
+import kotlinx.coroutines.channels.Channel
 import android.os.Bundle
 import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts
@@ -89,6 +94,25 @@ class MainActivity : ShakeActivity() {
     private val connectivityViewModel: ConnectivityViewModel by viewModels()
 
     private var isBound = false
+    private val hardwareVolumeRouter = HardwareVolumeRouter()
+    private val volumeCommands = Channel<KeyPressKeyValues>(Channel.BUFFERED)
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.keyCode != KeyEvent.KEYCODE_VOLUME_UP && event.keyCode != KeyEvent.KEYCODE_VOLUME_DOWN) {
+            return super.dispatchKeyEvent(event)
+        }
+        val eligible = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) &&
+            hasWindowFocus() && appPreferences.isHardwareVolumeEnabled() &&
+            deviceManager.getConnectedDevice() != null
+        val result = hardwareVolumeRouter.route(event.keyCode, event.action, eligible, event.isCanceled)
+        result.command?.let { volumeCommands.trySend(it) }
+        return if (result.consumed) true else super.dispatchKeyEvent(event)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        while (volumeCommands.tryReceive().isSuccess) { /* discard queued repeats */ }
+    }
 
     private val deviceChangedReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -99,6 +123,13 @@ class MainActivity : ShakeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // Serialize repeated presses so held keys do not create parallel network requests.
+        lifecycleScope.launch(ioDispatcher) {
+            for (key in volumeCommands) {
+                deviceManager.getConnectedDevice()?.performKeyPress(key)
+            }
+        }
 
         appReviewManager.onAppSessionStarted()
 
@@ -145,6 +176,7 @@ class MainActivity : ShakeActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        volumeCommands.close()
         unregisterReceiver(deviceChangedReceiver)
 
         if (isBound) {
