@@ -2,8 +2,17 @@ package wseemann.media.romote.preferences
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import wseemann.media.romote.model.NotificationStyle
 
 class AppPreferences(private val sharedPreferences: SharedPreferences) {
+
+    fun getNotificationStyle(): NotificationStyle = NotificationStyle.fromPreference(
+        sharedPreferences.getString(APP_PREFERENCE_NOTIFICATION_STYLE, NotificationStyle.THUMB_FRIENDLY.preferenceValue),
+    )
+
+    fun setNotificationStyle(style: NotificationStyle) {
+        sharedPreferences.edit { putString(APP_PREFERENCE_NOTIFICATION_STYLE, style.preferenceValue) }
+    }
 
     fun isNotificationWidgetEnabled(): Boolean {
         return false // sharedPreferences.getBoolean(APP_PREFERENCE_NOTIFICATION_WIDGET, false)
@@ -13,6 +22,13 @@ class AppPreferences(private val sharedPreferences: SharedPreferences) {
         sharedPreferences.edit {
             putBoolean(APP_PREFERENCE_NOTIFICATION_WIDGET, enabled)
         }
+    }
+
+    fun isHardwareVolumeEnabled(): Boolean =
+        sharedPreferences.getBoolean(APP_PREFERENCE_HARDWARE_VOLUME, true)
+
+    fun setHardwareVolumeEnabled(enabled: Boolean) {
+        sharedPreferences.edit { putBoolean(APP_PREFERENCE_HARDWARE_VOLUME, enabled) }
     }
 
     fun isShakeToPauseEnabled(): Boolean {
@@ -66,6 +82,8 @@ class AppPreferences(private val sharedPreferences: SharedPreferences) {
     }
 
     companion object {
+        private const val APP_PREFERENCE_NOTIFICATION_STYLE = "emerald_notification_style"
+        private const val APP_PREFERENCE_HARDWARE_VOLUME = "hardware_volume_enabled"
         const val APP_PREFERENCE_NOTIFICATION_WIDGET = "notification_checkbox_preference"
         private const val APP_PREFERENCE_SHAKE_TO_PAUSE = "shake_to_pause_checkbox_preference"
         private const val APP_PREFERENCE_REVIEW_FIRST_LAUNCH = "review_first_launch_millis"
