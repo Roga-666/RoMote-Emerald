@@ -112,7 +112,8 @@ jobs:
           current=app/build/outputs/apk/foss/release/app-foss-release.apk
           current_line="$("$tools_dir/aapt" dump badging "$current" | grep '^package: ' | head -n 1)"
           current_code="$(printf '%s\n' "$current_line" | grep -oP "versionCode='\\K[0-9]+")"
-          current_package="$(printf '%s\n' "$current_line" | grep -oP "name='\\K[^']+")"
+          current_package="$(printf '%s\n' "$current_line" | grep -oP "(?<= )name='\\K[^']+")"
+          printf 'Current package: %s; versionCode: %s\n' "$current_package" "$current_code"
           test "$current_package" = 'wseemann.media.romote.emerald'
           previous="$(gh release list --exclude-drafts --exclude-pre-releases --limit 100 --json tagName --jq '[.[] | select(.tagName | startswith("emerald-"))] | first | .tagName // empty')"
           if [ -n "$previous" ]; then
@@ -122,9 +123,10 @@ jobs:
             test -s "$old_apk"
             prior_line="$("$tools_dir/aapt" dump badging "$old_apk" | grep '^package: ' | head -n 1)"
             old_code="$(printf '%s\n' "$prior_line" | grep -oP "versionCode='\\K[0-9]+")"
-            old_package="$(printf '%s\n' "$prior_line" | grep -oP "name='\\K[^']+")"
+            old_package="$(printf '%s\n' "$prior_line" | grep -oP "(?<= )name='\\K[^']+")"
             current_cert="$("$tools_dir/apksigner" verify --print-certs "$current" | awk '/Signer #1 certificate SHA-256 digest:/ {print $NF;exit}')"
             old_cert="$("$tools_dir/apksigner" verify --print-certs "$old_apk" | awk '/Signer #1 certificate SHA-256 digest:/ {print $NF;exit}')"
+            printf 'Previous package: %s; versionCode: %s\n' "$old_package" "$old_code"
             test -n "$old_cert" && test "$current_cert" = "$old_cert" || { echo "::error::Signing identity changed"; exit 1; }
             test "$current_package" = "$old_package" || { echo "::error::Android application ID changed"; exit 1; }
             if [ "$current_code" -le "$old_code" ]; then echo "::error::versionCode has not increased"; exit 1; fi
