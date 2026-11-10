@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - app/**
+      - scripts/**
       - gradle/**
       - gradle.properties
       - build.gradle
@@ -92,6 +93,9 @@ jobs:
           echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/romote-emerald.jks"
           echo "ROMOTE_EMERALD_KEYSTORE_FILE=$RUNNER_TEMP/romote-emerald.jks" >> "$GITHUB_ENV"
 
+      - name: Verify release metadata parsers
+        run: python3 -m unittest discover -s scripts/tests -v
+
       - name: Test and build signed release
         if: steps.merge.outputs.conflict != 'true' && (github.event_name == 'push' || steps.merge.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
         run: ./gradlew testFossDebugUnitTest assembleFossRelease
@@ -110,26 +114,15 @@ jobs:
           set -euo pipefail
           tools_dir="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
           current=app/build/outputs/apk/foss/release/app-foss-release.apk
-          current_line="$("$tools_dir/aapt" dump badging "$current" | grep '^package: ' | head -n 1)"
-          current_code="$(printf '%s\n' "$current_line" | grep -oP "versionCode='\\K[0-9]+")"
-          current_package="$(printf '%s\n' "$current_line" | grep -oP "(?<= )name='\\K[^']+")"
-          printf 'Current package: %s; versionCode: %s\n' "$current_package" "$current_code"
-          test "$current_package" = 'wseemann.media.romote.emerald'
           previous="$(gh release list --exclude-drafts --exclude-pre-releases --limit 100 --json tagName --jq '[.[] | select(.tagName | startswith("emerald-"))] | first | .tagName // empty')"
           if [ -n "$previous" ]; then
             mkdir -p "$RUNNER_TEMP/older"
             gh release download "$previous" --pattern '*.apk' --dir "$RUNNER_TEMP/older"
-            old_apk="$(find "$RUNNER_TEMP/older" -name '*.apk' -type f | head -1)"
-            test -s "$old_apk"
-            prior_line="$("$tools_dir/aapt" dump badging "$old_apk" | grep '^package: ' | head -n 1)"
-            old_code="$(printf '%s\n' "$prior_line" | grep -oP "versionCode='\\K[0-9]+")"
-            old_package="$(printf '%s\n' "$prior_line" | grep -oP "(?<= )name='\\K[^']+")"
-            current_cert="$("$tools_dir/apksigner" verify --print-certs "$current" | awk '/Signer #1 certificate SHA-256 digest:/ {print $NF;exit}')"
-            old_cert="$("$tools_dir/apksigner" verify --print-certs "$old_apk" | awk '/Signer #1 certificate SHA-256 digest:/ {print $NF;exit}')"
-            printf 'Previous package: %s; versionCode: %s\n' "$old_package" "$old_code"
-            test -n "$old_cert" && test "$current_cert" = "$old_cert" || { echo "::error::Signing identity changed"; exit 1; }
-            test "$current_package" = "$old_package" || { echo "::error::Android application ID changed"; exit 1; }
-            if [ "$current_code" -le "$old_code" ]; then echo "::error::versionCode has not increased"; exit 1; fi
+            mapfile -t old_apks < <(find "$RUNNER_TEMP/older" -name '*.apk' -type f)
+            test "${#old_apks[@]}" -eq 1 || { echo "::error::Expected exactly one previous release APK"; exit 1; }
+            python3 scripts/verify_apk_update.py --tools "$tools_dir" "$current" "${old_apks[0]}"
+          else
+            python3 scripts/verify_apk_update.py --tools "$tools_dir" "$current"
           fi
 
       - name: Push verified upstream merge
