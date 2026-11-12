@@ -59,6 +59,7 @@ jobs:
         if: steps.signed.outputs.built == 'true'
         uses: actions/upload-artifact@v4
         with:
+          retention-days: 1
           name: RoMote-Emerald-signed
           path: app/build/outputs/apk/foss/release/app-foss-release.apk
           if-no-files-found: error
@@ -66,6 +67,7 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
+          retention-days: 1
           name: RoMote-Emerald-debug
           path: app/build/outputs/apk/foss/debug/app-foss-debug.apk
           if-no-files-found: error
@@ -74,6 +76,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          retention-days: 1
           name: RoMote-Emerald-layout-checks
           path: |
             app/build/reports/remote-layouts/
