@@ -14,7 +14,8 @@
         <item name="android:backgroundTint">@null</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:padding">6dp</item>
+        <item name="android:paddingHorizontal">3dp</item>
+        <item name="android:paddingVertical">6dp</item>
         <item name="android:tint">#FF00DDA3</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:stateListAnimator">@null</item>

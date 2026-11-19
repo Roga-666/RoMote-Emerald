@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="180dp" android:orientation="horizontal" android:baselineAligned="false" android:layoutDirection="ltr">
   <!-- Individual buttons fill the available left panel. Spacers are real non-command gaps. -->
-  <LinearLayout android:id="@+id/thumb_auxiliary_grid" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="144" android:orientation="vertical" android:baselineAligned="false">
+  <LinearLayout android:id="@+id/thumb_auxiliary_grid" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="104" android:orientation="vertical" android:baselineAligned="false">
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:baselineAligned="false">
       <ImageButton android:id="@+id/notification_volume_up" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_notification_volume_up" android:contentDescription="@string/remote_volume_up" />
       <TextView android:layout_width="8dp" android:layout_height="1dp" android:importantForAccessibility="no" />
