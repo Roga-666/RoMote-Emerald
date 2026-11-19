@@ -209,6 +209,24 @@ class ResponsiveRemoteLayoutTest {
     }
 
     @Test
+    fun launcherForegroundKeepsTheRedPowerIndicator() {
+        val context = RuntimeEnvironment.getApplication()
+        val icon = context.getDrawable(R.drawable.ic_launcher_foreground)!!
+        val size = 768
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        icon.setBounds(0, 0, size, size)
+        icon.draw(Canvas(bitmap))
+        val dotX = (68f * size / 108).toInt()
+        val dotY = (50f * size / 108).toInt()
+        assertEquals("The complete launcher must include its original red indicator", 0xffff2638.toInt(), bitmap.getPixel(dotX, dotY))
+        assertEquals("The original outer framing stays black", 0xff000000.toInt(), bitmap.getPixel(0, 0))
+        val file = File("build/reports/remote-layouts/launcher-icon-complete.png")
+        file.parentFile.mkdirs()
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        bitmap.recycle()
+    }
+
+    @Test
     fun statusBarRemoteHasVisibleDetailsAndTransparentCutouts() {
         val context = RuntimeEnvironment.getApplication()
         val icon = context.getDrawable(R.drawable.ic_notification_remote)!!
