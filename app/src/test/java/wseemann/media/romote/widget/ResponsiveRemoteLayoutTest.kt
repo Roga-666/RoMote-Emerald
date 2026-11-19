@@ -48,7 +48,7 @@ class ResponsiveRemoteLayoutTest {
             R.id.notification_up, R.id.notification_down, R.id.notification_left,
             R.id.notification_right, R.id.notification_ok,
         )
-        for ((width, minimum) in listOf(216 to 32, 280 to 42)) {
+        for ((width, minimum) in listOf(216 to 36, 280 to 48)) {
             val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
             root.measure(
                 View.MeasureSpec.makeMeasureSpec((width * density).toInt(), View.MeasureSpec.EXACTLY),
@@ -102,7 +102,7 @@ class ResponsiveRemoteLayoutTest {
             fun bounds(view: View): Rect = Rect(0, 0, view.width, view.height).also {
                 grid.offsetDescendantRectToMyCoords(view, it)
             }
-            val minimum = if (width >= 280) 48 else 40
+            val minimum = if (width >= 280) 48 else 35
             for (row in rows) {
                 val left = bounds(row[0])
                 val right = bounds(row[1])
@@ -126,6 +126,41 @@ class ResponsiveRemoteLayoutTest {
             val targets = rows.flatten().map { bounds(it) }
             for (i in targets.indices) for (j in i + 1 until targets.size) {
                 assertTrue("Command targets must never overlap", !Rect.intersects(targets[i], targets[j]))
+            }
+        }
+    }
+
+    @Test
+    fun dpadReaches168dpWithoutShrinkingTheApprovedIcons() {
+        val context = RuntimeEnvironment.getApplication()
+        val density = context.resources.displayMetrics.density
+        for ((height, expectedSide, expectedIcon) in listOf(Triple(180, 168f, 42f), Triple(164, 164f, 37f))) {
+            val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
+            root.measure(
+                View.MeasureSpec.makeMeasureSpec((280 * density).toInt(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec((height * density).toInt(), View.MeasureSpec.AT_MOST),
+            )
+            root.layout(0, 0, root.measuredWidth, root.measuredHeight)
+            val face = root.findViewById<ImageView>(R.id.thumb_dpad_face)
+            assertEquals("D-pad should use the extra width", expectedSide, face.width / density, 0.6f)
+            assertEquals("D-pad must stay circular", face.width, face.height)
+            val up = root.findViewById<View>(R.id.notification_up)
+            val left = root.findViewById<View>(R.id.notification_left)
+            val ok = root.findViewById<View>(R.id.notification_ok)
+            val right = root.findViewById<View>(R.id.notification_right)
+            val down = root.findViewById<View>(R.id.notification_down)
+            assertEquals("Up scales with the face", face.height * 42f / 144, up.height.toFloat(), 1f)
+            assertEquals("Left scales with the face", face.width * 42f / 144, left.width.toFloat(), 1f)
+            assertEquals("OK scales with the face", face.width * 60f / 144, ok.width.toFloat(), 1f)
+            assertEquals("OK stays square", ok.width, ok.height)
+            assertEquals("Left/right stay balanced", left.width.toFloat(), right.width.toFloat(), 2f)
+            assertEquals("Up/down stay balanced", up.height.toFloat(), down.height.toFloat(), 2f)
+            for (id in listOf(R.id.notification_volume_up, R.id.notification_power, R.id.notification_volume_down,
+                R.id.notification_home, R.id.notification_mute, R.id.notification_play_pause)) {
+                val button = root.findViewById<ImageButton>(id)
+                val image = RectF(button.drawable.bounds)
+                button.imageMatrix.mapRect(image)
+                assertEquals("Keep the approved icon scale", expectedIcon, image.width() / density, 1f)
             }
         }
     }
@@ -209,7 +244,8 @@ class ResponsiveRemoteLayoutTest {
                 val image = RectF(view.drawable.bounds)
                 view.imageMatrix.mapRect(image)
                 assertEquals("Icon artwork must keep its aspect ratio", image.width(), image.height(), 0.1f)
-                assertTrue("Artwork crosses cell edge", image.left >= 0 && image.top >= 0 && image.right <= view.width - view.paddingLeft - view.paddingRight + 0.1f && image.bottom <= view.height - view.paddingTop - view.paddingBottom + 0.1f)
+                // Matrix scaling may place an edge a few floating-point units below zero.
+                assertTrue("Artwork crosses cell edge: ${view.resources.getResourceEntryName(view.id)} image=$image size=${view.width}x${view.height} padding=${view.paddingLeft},${view.paddingTop},${view.paddingRight},${view.paddingBottom}", image.left >= -0.1f && image.top >= -0.1f && image.right <= view.width - view.paddingLeft - view.paddingRight + 0.1f && image.bottom <= view.height - view.paddingTop - view.paddingBottom + 0.1f)
                 if (view.id == R.id.thumb_dpad_face) {
                     val parent = view.parent as ViewGroup
                     val targets = parent.getChildAt(1)

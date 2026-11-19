@@ -65,3 +65,11 @@ The D-pad artwork and hit-region proportions are unchanged. Removing our outer p
 Android 12+ supplies a standard notification frame. The app can fill the custom content bounds, but cannot promise to reclaim Samsung's icon/header gutter or system padding. Settings previews show the app-owned controls, not a simulation of One UI's frame. Native layout tests validate panel fill, requested order, real gaps, non-overlap, icon size and 48dp targets at the stated content size; they do not constitute testing on a physical Samsung phone.
 
 This update is isolated on branch `feature/comfortable-notification-controls`. Revert its feature commit to restore 2.4.3's three-column layout and previous small icon. Preserve CI version-code integration and publish the revert with a higher version code. Classic and the home-screen/LockStar widgets retain their layouts.
+
+## Larger proportional D-pad (2.4.5)
+
+The right panel now receives enough width for a 168dp D-pad at 280×180dp custom-content bounds (previously about 146dp). At a 164dp height it scales to 164dp. The original square vector and all overlay ratios remain unchanged, so the arrows, OK button and tap areas grow together.
+
+The auxiliary faces narrow slightly to 48dp at 280dp content width. Their horizontal padding decreases from 6dp to 3dp so the approved 42dp icons at 180dp height (about 37dp at 164dp height) retain their scale. Button order, height, colors and 8dp gaps are unchanged. At 280×180dp all eleven command targets remain at least 48dp in each direction. Narrower allocations must scale down; tests still cover 216dp and 160dp hosts for fitting, with auxiliary targets at least 35dp wide at 216dp.
+
+This adjustment is isolated on branch `feature/larger-proportional-dpad`. Revert its feature commit to restore 2.4.4 sizing; retain publisher versioning and publish the revert with a higher version code.
