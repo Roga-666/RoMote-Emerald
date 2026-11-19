@@ -55,3 +55,13 @@ The revert restores versionCode 35 in app/build.gradle. Android will not install
 The auxiliary controls now use three columns and two rows: Play/Pause, Home, Power; then Mute, Volume down, Volume up. Icons remain centered with no visible labels; accessibility descriptions remain available. Play/Pause sends the same Roku PLAY toggle as the slim widget. Classic and both home-screen widgets remain unchanged. The D-pad vector and its hit-region proportions are unchanged; the left panel receives more width and both panels scale to the space supplied by Android.
 
 This update is isolated on branch `feature/thumb-six-button-grid`. Revert its feature commit to restore the previous five-button Thumb-Friendly layout. Keep the publisher version-code integration and publish the revert with a higher CI version code so existing installations can update normally.
+
+## Large independent controls (2.4.4)
+
+Thumb-Friendly now uses individual image buttons in two columns and three rows. Left column: Volume up, Volume down, Mute. Right column: Power, Home, Play/Pause. The buttons fill the available left panel, with 8dp non-command gaps between them and the D-pad. They retain the existing icon shapes, emerald tint and graphite faces, with no visible labels. At a 280×164dp content area, each auxiliary target is at least 48dp in both directions and icons are at least 36dp. Very narrow or short system allocations must still scale down; no minimum-size promise is made for those hosts.
+
+The D-pad artwork and hit-region proportions are unchanged. Removing our outer padding makes more of the app-owned content usable. The status-bar small icon is now a dedicated monochrome remote silhouette with transparent cutouts, rather than the Quick Settings tile artwork.
+
+Android 12+ supplies a standard notification frame. The app can fill the custom content bounds, but cannot promise to reclaim Samsung's icon/header gutter or system padding. Settings previews show the app-owned controls, not a simulation of One UI's frame. Native layout tests validate panel fill, requested order, real gaps, non-overlap, icon size and 48dp targets at the stated content size; they do not constitute testing on a physical Samsung phone.
+
+This update is isolated on branch `feature/comfortable-notification-controls`. Revert its feature commit to restore 2.4.3's three-column layout and previous small icon. Preserve CI version-code integration and publish the revert with a higher version code. Classic and the home-screen/LockStar widgets retain their layouts.

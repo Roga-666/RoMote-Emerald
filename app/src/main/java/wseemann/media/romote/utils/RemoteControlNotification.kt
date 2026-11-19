@@ -72,7 +72,7 @@ object RemoteControlNotification {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val notification = Notification.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_quick_remote_tile)
+            .setSmallIcon(R.drawable.ic_notification_remote)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(context.getString(R.string.quick_remote_notification_hint))
             .setContentIntent(openApp)

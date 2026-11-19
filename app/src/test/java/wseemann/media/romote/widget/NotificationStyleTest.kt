@@ -54,6 +54,7 @@ class NotificationStyleTest {
         RemoteControlNotification.refreshIfVisible(context)
         assertTrue(manager.activeNotifications.isEmpty())
         assertTrue(RemoteControlNotification.show(context))
+        assertEquals(R.drawable.ic_notification_remote, manager.activeNotifications.single().notification.smallIcon.resId)
         val id = manager.activeNotifications.single().id
         assertEquals(R.layout.notification_remote_thumb, manager.activeNotifications.single().notification.bigContentView.layoutId)
         preferences.setNotificationStyle(NotificationStyle.CLASSIC)
