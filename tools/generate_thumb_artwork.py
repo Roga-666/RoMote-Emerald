@@ -1,4 +1,4 @@
-"""Regenerate the optional Thumb-Friendly vectors (requires matplotlib; not used by the APK build)."""
+"""Regenerate the optional Thumb-Friendly D-pad vector (requires matplotlib; not used by the APK build)."""
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from matplotlib.textpath import TextPath
@@ -41,8 +41,7 @@ def label(parent, value, x, baseline, size, color):
     path(parent, ' '.join(commands), color)
 
 def icon(parent, name, x, y, size):
-    resource = 'ic_widget_play_pause' if name == 'play_pause' else f'ic_notification_{name}'
-    source = ET.parse(RES / f'drawable/{resource}.xml').getroot()
+    source = ET.parse(RES / f'drawable/ic_notification_{name}.xml').getroot()
     group = ET.SubElement(parent, 'group', {A('translateX'):str(x), A('translateY'):str(y), A('scaleX'):str(size/24), A('scaleY'):str(size/24)})
     for child in source:
         for sub in child.iter():
@@ -53,15 +52,6 @@ def icon(parent, name, x, y, size):
 def save(root, name):
     ET.indent(root)
     ET.ElementTree(root).write(RES / f'drawable/{name}.xml', encoding='utf-8', xml_declaration=True)
-
-left = vector(144, 168)
-# Six evenly spaced, icon-only controls matching the two-row mockup.
-for name, x, y in [('play_pause', 24, 42), ('home', 72, 42), ('power', 120, 42),
-                   ('mute', 24, 126), ('volume_down', 72, 126), ('volume_up', 120, 126)]:
-    face = circle(left, x, y, 22.5, DARK, GREEN, 1.3)
-    shade(face, '#FF253235')
-    icon(left, name, x-15, y-15, 30)
-save(left, 'thumb_remote_auxiliary')
 
 pad = vector(144, 144)
 # Keep the square viewport while offering a larger intrinsic size to the host.
@@ -78,4 +68,4 @@ face = circle(pad,72,72,29.5,GREEN)
 shade(face,GREEN)
 label(pad, 'OK', 72, 79.7, 22, '#FF102C2A')
 save(pad,'thumb_remote_dpad')
-print('Thumb-Friendly vector artwork regenerated.')
+print('Thumb-Friendly D-pad artwork regenerated.')

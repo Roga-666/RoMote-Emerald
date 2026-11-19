@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.RectF
 import android.view.View
 import android.view.ViewGroup
@@ -44,12 +45,10 @@ class ResponsiveRemoteLayoutTest {
         val context = RuntimeEnvironment.getApplication()
         val density = context.resources.displayMetrics.density
         val ids = listOf(
-            R.id.notification_play_pause, R.id.notification_home, R.id.notification_power, R.id.notification_mute,
-            R.id.notification_volume_down, R.id.notification_volume_up,
             R.id.notification_up, R.id.notification_down, R.id.notification_left,
             R.id.notification_right, R.id.notification_ok,
         )
-        for ((width, minimum) in listOf(216 to 30, 280 to 40)) {
+        for ((width, minimum) in listOf(216 to 32, 280 to 42)) {
             val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
             root.measure(
                 View.MeasureSpec.makeMeasureSpec((width * density).toInt(), View.MeasureSpec.EXACTLY),
@@ -84,26 +83,71 @@ class ResponsiveRemoteLayoutTest {
     }
 
     @Test
-    fun auxiliaryGridMatchesMockupAndUsesDistinctTargets() {
+    fun auxiliaryButtonsUseThePanelWithLargerIconsAndRealGaps() {
         val context = RuntimeEnvironment.getApplication()
-        val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
-        root.measure(View.MeasureSpec.makeMeasureSpec(280, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(180, View.MeasureSpec.EXACTLY))
-        root.layout(0, 0, root.measuredWidth, root.measuredHeight)
-        val rows = listOf(
-            listOf(R.id.notification_play_pause, R.id.notification_home, R.id.notification_power),
-            listOf(R.id.notification_mute, R.id.notification_volume_down, R.id.notification_volume_up),
-        ).map { row -> row.map { id -> root.findViewById<Button>(id) } }
-        for (row in rows) {
-            assertEquals(row[0].parent, row[1].parent)
-            assertEquals(row[1].parent, row[2].parent)
-            assertTrue(row[0].right <= row[1].left && row[1].right <= row[2].left)
-            assertTrue(row.maxOf { it.width } - row.minOf { it.width } <= 1)
-            row.forEach { assertTrue("Auxiliary buttons stay icon-only", it.text.isNullOrEmpty()) }
+        val density = context.resources.displayMetrics.density
+        for ((width, height) in listOf(216 to 164, 280 to 164, 280 to 180, 360 to 180, 600 to 180)) {
+            val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
+            root.measure(
+                View.MeasureSpec.makeMeasureSpec((width * density).toInt(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec((height * density).toInt(), View.MeasureSpec.AT_MOST),
+            )
+            root.layout(0, 0, root.measuredWidth, root.measuredHeight)
+            val grid = root.findViewById<ViewGroup>(R.id.thumb_auxiliary_grid)
+            val rows = listOf(
+                listOf(R.id.notification_volume_up, R.id.notification_power),
+                listOf(R.id.notification_volume_down, R.id.notification_home),
+                listOf(R.id.notification_mute, R.id.notification_play_pause),
+            ).map { row -> row.map { id -> root.findViewById<ImageButton>(id) } }
+            fun bounds(view: View): Rect = Rect(0, 0, view.width, view.height).also {
+                grid.offsetDescendantRectToMyCoords(view, it)
+            }
+            val minimum = if (width >= 280) 48 else 40
+            for (row in rows) {
+                val left = bounds(row[0])
+                val right = bounds(row[1])
+                assertEquals("Horizontal gap", 8f, (right.left - left.right) / density, 0.6f)
+                assertEquals(0, left.left)
+                assertEquals("Use the whole available width", grid.width, right.right)
+                assertEquals(left.top, right.top)
+                for (button in row) {
+                    assertTrue("Auxiliary width must be >= ${minimum}dp", button.width / density >= minimum - 0.5f)
+                    assertTrue("Auxiliary height must be >= ${minimum}dp", button.height / density >= minimum - 0.5f)
+                    val image = RectF(button.drawable.bounds)
+                    button.imageMatrix.mapRect(image)
+                    if (width >= 280) assertTrue("Icons must grow beyond the old ~26dp artwork", image.width() / density >= 36f)
+                }
+            }
+            assertEquals(0, bounds(rows.first()[0]).top)
+            assertEquals("Use the whole available height", grid.height, bounds(rows.last()[0]).bottom)
+            for (index in 0 until rows.lastIndex) {
+                assertEquals("Vertical gap", 8f, (bounds(rows[index + 1][0]).top - bounds(rows[index][0]).bottom) / density, 0.6f)
+            }
+            val targets = rows.flatten().map { bounds(it) }
+            for (i in targets.indices) for (j in i + 1 until targets.size) {
+                assertTrue("Command targets must never overlap", !Rect.intersects(targets[i], targets[j]))
+            }
         }
-        val top = rows[0][0].parent as View
-        val bottom = rows[1][0].parent as View
-        assertTrue(top.bottom <= bottom.top)
-        assertEquals(top.parent, bottom.parent)
+    }
+
+    @Test
+    fun statusBarRemoteHasVisibleDetailsAndTransparentCutouts() {
+        val context = RuntimeEnvironment.getApplication()
+        val icon = context.getDrawable(R.drawable.ic_notification_remote)!!
+        for (size in listOf(24, 48)) {
+            val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            icon.setBounds(0, 0, size, size)
+            icon.draw(Canvas(bitmap))
+            fun alpha(x: Int, y: Int) = android.graphics.Color.alpha(bitmap.getPixel(x * size / 24, y * size / 24))
+            assertTrue("The outline must be visible", alpha(5, 11) > 128)
+            assertTrue("The directional cross must be visible", alpha(12, 11) > 128)
+            assertEquals("The remote body must not become a solid white pill", 0, alpha(8, 15))
+            assertEquals("The space around the remote must stay transparent", 0, alpha(1, 11))
+            val file = File("build/reports/remote-layouts/notification-status-remote-${size}px.png")
+            file.parentFile.mkdirs()
+            file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            bitmap.recycle()
+        }
     }
 
     @Test
@@ -164,9 +208,9 @@ class ResponsiveRemoteLayoutTest {
             if (view is ImageView && view.drawable != null) {
                 val image = RectF(view.drawable.bounds)
                 view.imageMatrix.mapRect(image)
-                if (view.id != R.id.thumb_auxiliary_face) assertEquals("Ring must remain circular", image.width(), image.height(), 0.1f)
+                assertEquals("Icon artwork must keep its aspect ratio", image.width(), image.height(), 0.1f)
                 assertTrue("Artwork crosses cell edge", image.left >= 0 && image.top >= 0 && image.right <= view.width - view.paddingLeft - view.paddingRight + 0.1f && image.bottom <= view.height - view.paddingTop - view.paddingBottom + 0.1f)
-                if (view.id == R.id.thumb_dpad_face || view.id == R.id.thumb_auxiliary_face) {
+                if (view.id == R.id.thumb_dpad_face) {
                     val parent = view.parent as ViewGroup
                     val targets = parent.getChildAt(1)
                     assertEquals("Hit regions must track the artwork", android.graphics.Rect(view.left, view.top, view.right, view.bottom), android.graphics.Rect(targets.left, targets.top, targets.right, targets.bottom))
