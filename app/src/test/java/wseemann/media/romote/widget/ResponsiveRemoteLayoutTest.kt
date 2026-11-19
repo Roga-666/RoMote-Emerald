@@ -83,7 +83,7 @@ class ResponsiveRemoteLayoutTest {
     }
 
     @Test
-    fun auxiliaryButtonsUseThePanelWithLargerIconsAndRealGaps() {
+    fun auxiliaryButtonsUseThePanelWithRealGaps() {
         val context = RuntimeEnvironment.getApplication()
         val density = context.resources.displayMetrics.density
         for ((width, height) in listOf(216 to 164, 280 to 164, 280 to 180, 360 to 180, 600 to 180)) {
@@ -115,7 +115,7 @@ class ResponsiveRemoteLayoutTest {
                     assertTrue("Auxiliary height must be >= ${minimum}dp", button.height / density >= minimum - 0.5f)
                     val image = RectF(button.drawable.bounds)
                     button.imageMatrix.mapRect(image)
-                    if (width >= 280) assertTrue("Icons must grow beyond the old ~26dp artwork", image.width() / density >= 36f)
+                    if (width >= 280) assertTrue("Circular faces should fill the available button width", image.width() / density >= 47f)
                 }
             }
             assertEquals(0, bounds(rows.first()[0]).top)
@@ -131,10 +131,10 @@ class ResponsiveRemoteLayoutTest {
     }
 
     @Test
-    fun dpadReaches168dpWithoutShrinkingTheApprovedIcons() {
+    fun dpadKeeps168dpWithCircularAuxiliaryFaces() {
         val context = RuntimeEnvironment.getApplication()
         val density = context.resources.displayMetrics.density
-        for ((height, expectedSide, expectedIcon) in listOf(Triple(180, 168f, 42f), Triple(164, 164f, 37f))) {
+        for ((height, expectedSide) in listOf(180 to 168f, 164 to 164f)) {
             val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
             root.measure(
                 View.MeasureSpec.makeMeasureSpec((280 * density).toInt(), View.MeasureSpec.EXACTLY),
@@ -160,7 +160,50 @@ class ResponsiveRemoteLayoutTest {
                 val button = root.findViewById<ImageButton>(id)
                 val image = RectF(button.drawable.bounds)
                 button.imageMatrix.mapRect(image)
-                assertEquals("Keep the approved icon scale", expectedIcon, image.width() / density, 1f)
+                assertEquals("Keep circular faces at 48dp", 48f, image.width() / density, 1f)
+            }
+        }
+    }
+
+    @Test
+    fun auxiliaryFacesStayCircularWithCenteredGlyphsInEveryState() {
+        val context = RuntimeEnvironment.getApplication()
+        val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
+        val ids = listOf(R.id.notification_volume_up, R.id.notification_power, R.id.notification_volume_down,
+            R.id.notification_home, R.id.notification_mute, R.id.notification_play_pause)
+        for (id in ids) {
+            val drawable = root.findViewById<ImageButton>(id).drawable
+            assertTrue("Each face supplies pressed/focused feedback", drawable.isStateful)
+            for (state in listOf(intArrayOf(), intArrayOf(android.R.attr.state_pressed), intArrayOf(android.R.attr.state_focused))) {
+                drawable.state = state
+                drawable.setBounds(0, 0, 48, 48)
+                val bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888)
+                drawable.draw(Canvas(bitmap))
+                fun alpha(x: Int, y: Int) = android.graphics.Color.alpha(bitmap.getPixel(x, y))
+                for ((x, y) in listOf(0 to 0, 47 to 0, 0 to 47, 47 to 47)) {
+                    assertEquals("Circle corners must stay transparent", 0, alpha(x, y))
+                }
+                for ((x, y) in listOf(24 to 1, 1 to 24, 46 to 24, 24 to 46)) {
+                    assertTrue("The circular face must reach all four axes", alpha(x, y) > 0)
+                }
+                var minX = 48
+                var minY = 48
+                var maxX = -1
+                var maxY = -1
+                for (y in 0 until 48) for (x in 0 until 48) {
+                    // Exclude the emerald outline; inspect the icon ink inside the ring.
+                    val radiusSquared = (x + 0.5f - 24) * (x + 0.5f - 24) + (y + 0.5f - 24) * (y + 0.5f - 24)
+                    if (radiusSquared < 400 && bitmap.getPixel(x, y) == 0xff00dda3.toInt()) {
+                        minX = minOf(minX, x)
+                        minY = minOf(minY, y)
+                        maxX = maxOf(maxX, x)
+                        maxY = maxOf(maxY, y)
+                    }
+                }
+                assertTrue("Icon remains visible with breathing room", maxX - minX + 1 in 20..34 && maxY - minY + 1 in 16..34)
+                assertEquals("Icon centered horizontally", 24f, (minX + maxX + 1) / 2f, 1f)
+                assertEquals("Icon centered vertically", 24f, (minY + maxY + 1) / 2f, 1f)
+                bitmap.recycle()
             }
         }
     }

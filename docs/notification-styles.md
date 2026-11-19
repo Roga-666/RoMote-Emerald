@@ -73,3 +73,11 @@ The right panel now receives enough width for a 168dp D-pad at 280×180dp custom
 The auxiliary faces narrow slightly to 48dp at 280dp content width. Their horizontal padding decreases from 6dp to 3dp so the approved 42dp icons at 180dp height (about 37dp at 164dp height) retain their scale. Button order, height, colors and 8dp gaps are unchanged. At 280×180dp all eleven command targets remain at least 48dp in each direction. Narrower allocations must scale down; tests still cover 216dp and 160dp hosts for fitting, with auxiliary targets at least 35dp wide at 216dp.
 
 This adjustment is isolated on branch `feature/larger-proportional-dpad`. Revert its feature commit to restore 2.4.4 sizing; retain publisher versioning and publish the revert with a higher version code.
+
+## Circular left controls (2.4.6)
+
+The six left faces are now circular vector artwork centered inside their existing command targets. The 168dp D-pad, its control proportions, both panel allocations, target sizes, button order and 8dp non-command gaps are unchanged. The rectangular target can stay comfortably large while the visible face remains a true circle. Normal, pressed and focused states all use the same circular outline.
+
+The existing icon paths and emerald/graphite colors are preserved. Icons use a slightly smaller 34px size in the 48px circular canvas, with their actual path bounds centered horizontally and vertically. This corrects asymmetric built-in margins in icons such as Play/Pause and the volume controls. The artwork generator requires matplotlib and fontTools; generated resources ship in the APK without a runtime dependency.
+
+Native tests verify circular source scaling, transparent corners, outline coverage, centered icon ink in all three states, unchanged D-pad size and proportions, target sizes, gaps, bounds and commands. This update is isolated on branch `feature/circular-notification-buttons`; revert its feature commit to restore 2.4.5's button faces while keeping the larger D-pad. Retain CI versioning and use a higher publisher version code for a rollback update.
