@@ -41,7 +41,8 @@ def label(parent, value, x, baseline, size, color):
     path(parent, ' '.join(commands), color)
 
 def icon(parent, name, x, y, size):
-    source = ET.parse(RES / f'drawable/ic_notification_{name}.xml').getroot()
+    resource = 'ic_widget_play_pause' if name == 'play_pause' else f'ic_notification_{name}'
+    source = ET.parse(RES / f'drawable/{resource}.xml').getroot()
     group = ET.SubElement(parent, 'group', {A('translateX'):str(x), A('translateY'):str(y), A('scaleX'):str(size/24), A('scaleY'):str(size/24)})
     for child in source:
         for sub in child.iter():
@@ -53,17 +54,13 @@ def save(root, name):
     ET.indent(root)
     ET.ElementTree(root).write(RES / f'drawable/{name}.xml', encoding='utf-8', xml_declaration=True)
 
-left = vector(96, 168)
-# Two columns let the auxiliary targets grow alongside the main D-pad.
-for name, x, y in [('home', 24, 28), ('power', 72, 28), ('mute', 48, 84)]:
+left = vector(144, 168)
+# Six evenly spaced, icon-only controls matching the two-row mockup.
+for name, x, y in [('play_pause', 24, 42), ('home', 72, 42), ('power', 120, 42),
+                   ('mute', 24, 126), ('volume_down', 72, 126), ('volume_up', 120, 126)]:
     face = circle(left, x, y, 22.5, DARK, GREEN, 1.3)
     shade(face, '#FF253235')
     icon(left, name, x-15, y-15, 30)
-pill = path(left, 'M25,116 H71 A24,24 0,0 1,71,164 H25 A24,24 0,0 1,25,116 Z', DARK, GREEN, 1.3)
-shade(pill, '#FF253235')
-path(left, 'M48,117 L48,163', stroke='#FF0C171A', width=1.5)
-for name, x in [('volume_down',24),('volume_up',72)]:
-    icon(left, name, x-15, 125, 30)
 save(left, 'thumb_remote_auxiliary')
 
 pad = vector(144, 144)

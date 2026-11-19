@@ -101,6 +101,9 @@ object RemoteControlNotification {
 
         link(expanded, context, R.id.notification_volume_up, KeyPressKeyValues.VOLUME_UP, 12)
         link(expanded, context, R.id.notification_volume_down, KeyPressKeyValues.VOLUME_DOWN, 13)
+        if (layoutId == R.layout.notification_remote_thumb) {
+            link(expanded, context, R.id.notification_play_pause, KeyPressKeyValues.PLAY, 14)
+        }
         return expanded
     }
 

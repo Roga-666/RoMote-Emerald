@@ -35,21 +35,21 @@ class ResponsiveRemoteLayoutTest {
 
     @Test
     fun thumbNotificationFitsConstrainedHosts() {
-        checkLayouts(R.layout.notification_remote_thumb, listOf(160 to 88, 200 to 120, 216 to 164, 216 to 180, 280 to 164, 280 to 180, 600 to 180), 10, View.MeasureSpec.AT_MOST)
+        checkLayouts(R.layout.notification_remote_thumb, listOf(160 to 88, 200 to 120, 216 to 164, 216 to 180, 280 to 164, 280 to 180, 600 to 180), 11, View.MeasureSpec.AT_MOST)
     }
 
 
     @Test
-    fun thumbControlsHaveLargerTouchTargets() {
+    fun thumbControlsRetainUsableTouchTargets() {
         val context = RuntimeEnvironment.getApplication()
         val density = context.resources.displayMetrics.density
         val ids = listOf(
-            R.id.notification_home, R.id.notification_power, R.id.notification_mute,
+            R.id.notification_play_pause, R.id.notification_home, R.id.notification_power, R.id.notification_mute,
             R.id.notification_volume_down, R.id.notification_volume_up,
             R.id.notification_up, R.id.notification_down, R.id.notification_left,
             R.id.notification_right, R.id.notification_ok,
         )
-        for ((width, minimum) in listOf(216 to 36, 280 to 48)) {
+        for ((width, minimum) in listOf(216 to 30, 280 to 40)) {
             val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
             root.measure(
                 View.MeasureSpec.makeMeasureSpec((width * density).toInt(), View.MeasureSpec.EXACTLY),
@@ -79,8 +79,31 @@ class ResponsiveRemoteLayoutTest {
             )
             host.layout(0, 0, host.measuredWidth, host.measuredHeight)
             assertTrue("Notification content overflows its host", root.right <= host.width && root.bottom <= host.height)
-            verify(root, 10)
+            verify(root, 11)
         }
+    }
+
+    @Test
+    fun auxiliaryGridMatchesMockupAndUsesDistinctTargets() {
+        val context = RuntimeEnvironment.getApplication()
+        val root = RemoteControlNotification.createRemoteViews(context, R.layout.notification_remote_thumb).apply(context, FrameLayout(context))
+        root.measure(View.MeasureSpec.makeMeasureSpec(280, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(180, View.MeasureSpec.EXACTLY))
+        root.layout(0, 0, root.measuredWidth, root.measuredHeight)
+        val rows = listOf(
+            listOf(R.id.notification_play_pause, R.id.notification_home, R.id.notification_power),
+            listOf(R.id.notification_mute, R.id.notification_volume_down, R.id.notification_volume_up),
+        ).map { row -> row.map { id -> root.findViewById<Button>(id) } }
+        for (row in rows) {
+            assertEquals(row[0].parent, row[1].parent)
+            assertEquals(row[1].parent, row[2].parent)
+            assertTrue(row[0].right <= row[1].left && row[1].right <= row[2].left)
+            assertTrue(row.maxOf { it.width } - row.minOf { it.width } <= 1)
+            row.forEach { assertTrue("Auxiliary buttons stay icon-only", it.text.isNullOrEmpty()) }
+        }
+        val top = rows[0][0].parent as View
+        val bottom = rows[1][0].parent as View
+        assertTrue(top.bottom <= bottom.top)
+        assertEquals(top.parent, bottom.parent)
     }
 
     @Test
