@@ -49,3 +49,9 @@ The revert restores versionCode 35 in app/build.gradle. Android will not install
 - Only notification creation consults this preference. Widgets keep their explicit layouts.
 - `tools/generate_thumb_artwork.py` regenerates the vector assets with matplotlib; it is not required to build the app.
 - Tests cover both styles' command routing, saved selection, switching an active notification, dismissed-notification behavior, inert previews, constrained bounds, and aligned hit regions.
+
+## Six-button Thumb-Friendly layout (2.4.3)
+
+The auxiliary controls now use three columns and two rows: Play/Pause, Home, Power; then Mute, Volume down, Volume up. Icons remain centered with no visible labels; accessibility descriptions remain available. Play/Pause sends the same Roku PLAY toggle as the slim widget. Classic and both home-screen widgets remain unchanged. The D-pad vector and its hit-region proportions are unchanged; the left panel receives more width and both panels scale to the space supplied by Android.
+
+This update is isolated on branch `feature/thumb-six-button-grid`. Revert its feature commit to restore the previous five-button Thumb-Friendly layout. Keep the publisher version-code integration and publish the revert with a higher CI version code so existing installations can update normally.

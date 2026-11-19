@@ -93,6 +93,15 @@ class NotificationStyleTest {
                 assertEquals("romote://remote/key/${command.name}", intent.dataString)
                 assertEquals(CommandReceiver::class.java.name, intent.component?.className)
             }
+            if (style == NotificationStyle.THUMB_FRIENDLY) {
+                assertTrue(root.findViewById<View>(R.id.notification_play_pause).performClick())
+                val intent = shadowOf(context).broadcastIntents.last()
+                assertEquals(KeyPressKeyValues.PLAY, intent.getSerializableExtra("keypress"))
+                assertEquals("romote://remote/key/${KeyPressKeyValues.PLAY.name}", intent.dataString)
+                assertEquals(CommandReceiver::class.java.name, intent.component?.className)
+            } else {
+                assertNull(root.findViewById<View>(R.id.notification_play_pause))
+            }
             assertTrue(root.findViewById<View>(R.id.notification_power).performClick())
             assertEquals(CommandReceiver.ACTION_TOGGLE_POWER, shadowOf(context).broadcastIntents.last().action)
         }
