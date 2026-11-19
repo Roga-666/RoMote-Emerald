@@ -3,21 +3,21 @@
   <!-- Individual buttons fill the available left panel. Spacers are real non-command gaps. -->
   <LinearLayout android:id="@+id/thumb_auxiliary_grid" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="104" android:orientation="vertical" android:baselineAligned="false">
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:baselineAligned="false">
-      <ImageButton android:id="@+id/notification_volume_up" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_notification_volume_up" android:contentDescription="@string/remote_volume_up" />
+      <ImageButton android:id="@+id/notification_volume_up" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/thumb_button_volume_up" android:contentDescription="@string/remote_volume_up" />
       <TextView android:layout_width="8dp" android:layout_height="1dp" android:importantForAccessibility="no" />
-      <ImageButton android:id="@+id/notification_power" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_notification_power" android:contentDescription="@string/quick_remote_power" />
+      <ImageButton android:id="@+id/notification_power" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/thumb_button_power" android:contentDescription="@string/quick_remote_power" />
     </LinearLayout>
     <TextView android:layout_width="1dp" android:layout_height="8dp" android:importantForAccessibility="no" />
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:baselineAligned="false">
-      <ImageButton android:id="@+id/notification_volume_down" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_notification_volume_down" android:contentDescription="@string/remote_volume_down" />
+      <ImageButton android:id="@+id/notification_volume_down" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/thumb_button_volume_down" android:contentDescription="@string/remote_volume_down" />
       <TextView android:layout_width="8dp" android:layout_height="1dp" android:importantForAccessibility="no" />
-      <ImageButton android:id="@+id/notification_home" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_notification_home" android:contentDescription="@string/remote_home" />
+      <ImageButton android:id="@+id/notification_home" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/thumb_button_home" android:contentDescription="@string/remote_home" />
     </LinearLayout>
     <TextView android:layout_width="1dp" android:layout_height="8dp" android:importantForAccessibility="no" />
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:baselineAligned="false">
-      <ImageButton android:id="@+id/notification_mute" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_notification_mute" android:contentDescription="@string/quick_remote_mute" />
+      <ImageButton android:id="@+id/notification_mute" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/thumb_button_mute" android:contentDescription="@string/quick_remote_mute" />
       <TextView android:layout_width="8dp" android:layout_height="1dp" android:importantForAccessibility="no" />
-      <ImageButton android:id="@+id/notification_play_pause" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/ic_widget_play_pause" android:contentDescription="@string/quick_remote_play_pause" />
+      <ImageButton android:id="@+id/notification_play_pause" style="@style/ThumbAuxiliaryButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:src="@drawable/thumb_button_play_pause" android:contentDescription="@string/quick_remote_play_pause" />
     </LinearLayout>
   </LinearLayout>
   <TextView android:layout_width="8dp" android:layout_height="1dp" android:importantForAccessibility="no" />

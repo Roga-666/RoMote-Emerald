@@ -10,13 +10,12 @@
         <item name="android:focusable">true</item>
     </style>
     <style name="ThumbAuxiliaryButton" parent="android:Widget.ImageButton">
-        <item name="android:background">@drawable/thumb_auxiliary_button_background</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:backgroundTint">@null</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:paddingHorizontal">3dp</item>
-        <item name="android:paddingVertical">6dp</item>
-        <item name="android:tint">#FF00DDA3</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:tint">@null</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:focusable">true</item>

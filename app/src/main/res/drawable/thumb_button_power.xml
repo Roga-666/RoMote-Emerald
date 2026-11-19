@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_pressed="true">
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+      <path android:pathData="M24,1.5 A22.5,22.5 0,1 0,24,46.5 A22.5,22.5 0,1 0,24,1.5 Z" android:fillColor="#FF31594F" android:strokeColor="#FF00DDA3" android:strokeWidth="2" />
+      <group android:translateX="7.0" android:translateY="8.045666669767325" android:scaleX="1.4166666666666667" android:scaleY="1.4166666666666667">
+        <path android:fillColor="#FF00DDA3" android:pathData="M11,3h2v9h-2zM7.1,5.2l1.4,1.5A6,6 0,1 0,15.5 6.7l1.4,-1.5A8,8 0,1 1,7.1 5.2z" />
+      </group>
+    </vector>
+  </item>
+  <item android:state_focused="true">
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+      <path android:pathData="M24,1.5 A22.5,22.5 0,1 0,24,46.5 A22.5,22.5 0,1 0,24,1.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="3" />
+      <group android:translateX="7.0" android:translateY="8.045666669767325" android:scaleX="1.4166666666666667" android:scaleY="1.4166666666666667">
+        <path android:fillColor="#FF00DDA3" android:pathData="M11,3h2v9h-2zM7.1,5.2l1.4,1.5A6,6 0,1 0,15.5 6.7l1.4,-1.5A8,8 0,1 1,7.1 5.2z" />
+      </group>
+    </vector>
+  </item>
+  <item>
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+      <path android:pathData="M24,1.5 A22.5,22.5 0,1 0,24,46.5 A22.5,22.5 0,1 0,24,1.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="1.5" />
+      <group android:translateX="7.0" android:translateY="8.045666669767325" android:scaleX="1.4166666666666667" android:scaleY="1.4166666666666667">
+        <path android:fillColor="#FF00DDA3" android:pathData="M11,3h2v9h-2zM7.1,5.2l1.4,1.5A6,6 0,1 0,15.5 6.7l1.4,-1.5A8,8 0,1 1,7.1 5.2z" />
+      </group>
+    </vector>
+  </item>
+</selector>

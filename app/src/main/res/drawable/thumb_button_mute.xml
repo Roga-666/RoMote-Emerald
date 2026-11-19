@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_pressed="true">
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+      <path android:pathData="M24,1.5 A22.5,22.5 0,1 0,24,46.5 A22.5,22.5 0,1 0,24,1.5 Z" android:fillColor="#FF31594F" android:strokeColor="#FF00DDA3" android:strokeWidth="2" />
+      <group android:translateX="7.708333333333332" android:translateY="7.0" android:scaleX="1.4166666666666667" android:scaleY="1.4166666666666667">
+        <path android:fillColor="#FF00DDA3" android:pathData="M2,9v6h4l5,4V5L6,9H2zM18.5,12l2.5,-2.5 -1.5,-1.5 -2.5,2.5L14.5,8 13,9.5l2.5,2.5L13,14.5l1.5,1.5 2.5,-2.5 2.5,2.5 1.5,-1.5z" />
+      </group>
+    </vector>
+  </item>
+  <item android:state_focused="true">
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+      <path android:pathData="M24,1.5 A22.5,22.5 0,1 0,24,46.5 A22.5,22.5 0,1 0,24,1.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="3" />
+      <group android:translateX="7.708333333333332" android:translateY="7.0" android:scaleX="1.4166666666666667" android:scaleY="1.4166666666666667">
+        <path android:fillColor="#FF00DDA3" android:pathData="M2,9v6h4l5,4V5L6,9H2zM18.5,12l2.5,-2.5 -1.5,-1.5 -2.5,2.5L14.5,8 13,9.5l2.5,2.5L13,14.5l1.5,1.5 2.5,-2.5 2.5,2.5 1.5,-1.5z" />
+      </group>
+    </vector>
+  </item>
+  <item>
+    <vector android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+      <path android:pathData="M24,1.5 A22.5,22.5 0,1 0,24,46.5 A22.5,22.5 0,1 0,24,1.5 Z" android:fillColor="#FF253235" android:strokeColor="#FF00DDA3" android:strokeWidth="1.5" />
+      <group android:translateX="7.708333333333332" android:translateY="7.0" android:scaleX="1.4166666666666667" android:scaleY="1.4166666666666667">
+        <path android:fillColor="#FF00DDA3" android:pathData="M2,9v6h4l5,4V5L6,9H2zM18.5,12l2.5,-2.5 -1.5,-1.5 -2.5,2.5L14.5,8 13,9.5l2.5,2.5L13,14.5l1.5,1.5 2.5,-2.5 2.5,2.5 1.5,-1.5z" />
+      </group>
+    </vector>
+  </item>
+</selector>

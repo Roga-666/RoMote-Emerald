@@ -1,8 +1,10 @@
-"""Regenerate the optional Thumb-Friendly D-pad vector (requires matplotlib; not used by the APK build)."""
+"""Regenerate Thumb-Friendly vectors (requires matplotlib/fontTools; not used by the APK build)."""
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from matplotlib.textpath import TextPath
 from matplotlib.font_manager import FontProperties
+from fontTools.pens.boundsPen import BoundsPen
+from fontTools.svgLib.path import parse_path
 
 RES = Path(__file__).resolve().parents[1] / 'app/src/main/res'
 NS = 'http://schemas.android.com/apk/res/android'
@@ -53,6 +55,34 @@ def save(root, name):
     ET.indent(root)
     ET.ElementTree(root).write(RES / f'drawable/{name}.xml', encoding='utf-8', xml_declaration=True)
 
+# A square source keeps the visible face circular even when its tap area is rectangular.
+# Center the actual glyph bounds: several original icons are asymmetric in their 24px canvas.
+for name in ['volume_up', 'volume_down', 'mute', 'power', 'home', 'play_pause']:
+    selector = ET.Element('selector')
+    for state, fill, stroke in [('state_pressed', '#FF31594F', 2), ('state_focused', '#FF253235', 3), (None, '#FF253235', 1.5)]:
+        item = ET.SubElement(selector, 'item', {A(state): 'true'} if state else {})
+        face = vector(48, 48)
+        item.append(face)
+        circle(face, 24, 24, 22.5, fill, GREEN, stroke)
+        resource = 'ic_widget_play_pause' if name == 'play_pause' else f'ic_notification_{name}'
+        source = ET.parse(RES / f'drawable/{resource}.xml').getroot()
+        bounds = BoundsPen(None)
+        for element in source.iter('path'):
+            parse_path(element.attrib[A('pathData')], bounds)
+        x0, y0, x1, y1 = bounds.bounds
+        scale = 34 / 24
+        glyph = ET.SubElement(face, 'group', {
+            A('translateX'): str(24 - (x0 + x1) * scale / 2),
+            A('translateY'): str(24 - (y0 + y1) * scale / 2),
+            A('scaleX'): str(scale), A('scaleY'): str(scale),
+        })
+        for child in source:
+            for element in child.iter():
+                if A('fillColor') in element.attrib:
+                    element.set(A('fillColor'), GREEN)
+            glyph.append(child)
+    save(selector, f'thumb_button_{name}')
+
 pad = vector(144, 144)
 # Keep the square viewport while offering a larger intrinsic size to the host.
 pad.set(A('width'), '168dp')
@@ -68,4 +98,4 @@ face = circle(pad,72,72,29.5,GREEN)
 shade(face,GREEN)
 label(pad, 'OK', 72, 79.7, 22, '#FF102C2A')
 save(pad,'thumb_remote_dpad')
-print('Thumb-Friendly D-pad artwork regenerated.')
+print('Thumb-Friendly circular buttons and D-pad artwork regenerated.')
